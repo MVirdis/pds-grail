@@ -1,7 +1,6 @@
 #ifndef _GRAPH_H_
 #define _GRAPH_H_
 
-#include <string>
 #include <iostream>
 #include <vector>
 
@@ -24,11 +23,12 @@ class Graph {
 	Graph(void);
 
 	/* Methods */
-	Graph& from_file(std::string filepath);
 	Graph& from_file(char* filepath);
 
 	/* Getters */
-	std::vector<Node*>& get_roots(bool random) const;
+	std::vector<Node*> get_roots(bool random=true) const;
+	std::vector<Node*> get_children(Node* node, bool random=true) const;
+	Node* get_node(int nid) const;
 	uint get_num_nodes(void) const;
 
 	/* Operators */
