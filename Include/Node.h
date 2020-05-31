@@ -27,23 +27,23 @@ class Node {
 	uint id;						// Node number
 	std::vector<Node*> adj_nodes;	// Reachable nodes
 
+	Node(const Node& node);			// Copy constructor blocked
+
   public:
 	/* Constructors */
 	Node(uint id);
-	Node(const Node& node) = delete;	// Copy constructor deleted => unusable
-	Node(Node&& node);					// Move Constructor
 
 	/* Getters */
 	uint get_id(void) const;
 	Interval& get_interval(int index) const;
-	std::vector<Node*>& get_children(void) const;
+	std::vector<Node*> get_children(void) const;
 
 	/* Methods */
 	Node& add_child(Node* child);
 	Node& add_interval(Interval interval, int index);
 
 	/* Operators */
-	friend std::ostream& operator <<(const std::ostream& ostr, const Node& node);
+	friend std::ostream& operator <<(std::ostream& ostr, const Node& node);
 
 	~Node(void);
 };
