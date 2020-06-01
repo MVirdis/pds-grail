@@ -35,7 +35,7 @@ class Node {
 
 	/* Getters */
 	uint get_id(void) const;
-	Interval& get_interval(int index) const;
+	Interval get_interval(int index) const;
 	std::vector<Node*> get_children(void) const;
 
 	/* Methods */
@@ -45,7 +45,7 @@ class Node {
 	/* Operators */
 	friend std::ostream& operator <<(std::ostream& ostr, const Node& node);
 
-	~Node(void);
+	//~Node(void);
 };
 
 #endif

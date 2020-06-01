@@ -3,9 +3,9 @@ graph_test: clean
 	cp Include/Graph.h build
 	cp Graph/Graph.cpp build
 	cp Include/Node.h build
-	cp Graph/Node.cpp build
+	cp Node/Node.cpp build
 	cp Include/Types.h build
-	cp Graph/test.cpp build
+	cp Node/test.cpp build
 	cp Include/Generator.h build
 	cp Generator/dag_generator.c build
 	g++ -Wall -g -o build/graph_test build/dag_generator.c build/*.cpp -DDEBUG
