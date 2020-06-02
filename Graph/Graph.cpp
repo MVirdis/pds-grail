@@ -24,11 +24,15 @@ Graph& Graph::from_file(char* filepath) {
     cout<<"Read num: "<<num<<endl;
 #endif
 
+#ifdef DEBUG
+    cout<<"Allocating al nodes... ";
+#endif
+
     // Allocate flags for root nodes
     bool* is_root = new bool[num];
 
     // Allocate num empty nodes
-    for(int i=0; i<num; ++i) {
+    for(uint i=0; i<num; ++i) {
         Node* new_node = new Node(i);
         if (new_node == NULL) {
             cerr<<"Error allocating new node!"<<endl;
@@ -40,6 +44,10 @@ Graph& Graph::from_file(char* filepath) {
         nodes.push_back(new_node);
     }
 
+#ifdef DEBUG
+    cout<<"  OK"<<endl<<"Start reading lines:"<<endl;
+#endif
+
     // For each new node make connections
     string line;
     int id=0;
@@ -48,21 +56,41 @@ Graph& Graph::from_file(char* filepath) {
         istringstream iss(line);
         int nodeid, childid;
 
+#ifdef DEBUG
+        cout<<id<<": "<<line<<endl;
+#endif
+
         if (!(iss >> nodeid) || nodeid != (id++)) {
+#ifdef DEBUG
+            cout<<"Mismatch read "<<nodeid<<" for line "<<id-1<<endl;
+#endif
             continue;
         }
 
+#ifdef DEBUG
+        cout<<"Has child: ";
+#endif
         // Read remaining numbers in line
         while((iss >> childid)) {
+#ifdef DEBUG
+            cout<<childid<<" ";
+#endif
             nodes[nodeid]->add_child(nodes[childid]);
             is_root[childid] = false;
         }
+#ifdef DEBUG
+        cout<<endl;
+#endif
     }
 
     // Save root nodes
-    for(int i=0; i<num; ++i)
-        if(is_root[i])
+    for(uint i=0; i<num; ++i)
+        if(is_root[i]) {
+#ifdef DEBUG
+            cout<<"Node "<<i<<" is root"<<endl;
+#endif
             roots.push_back(nodes[i]);
+        }
 
     delete[] is_root;
     file.close();
@@ -85,7 +113,7 @@ vector<Node*> Graph::get_children(Node* node, bool random) const {
 }
 
 Node* Graph::get_node(int nid) const {
-    if (this->nodes.size() == 0 || this->nodes.size() <= (int)nid) return NULL;
+    if (this->nodes.size() == 0u || this->nodes.size() <= (uint)nid) return NULL;
     return this->nodes[nid];
 }
 
@@ -95,7 +123,7 @@ uint Graph::get_num_nodes(void) const {
 
 ostream& operator <<(ostream& ostr, const Graph& graph) {
     ostr<<"Nodes: [ ";
-    for (int i=0; i<graph.nodes.size()-1; ++i) {
+    for (uint i=0; i<graph.nodes.size()-1; ++i) {
         ostr<<*(graph.nodes[i])<<", ";
     }
     ostr<<*(*graph.nodes.end())<<" ]";
