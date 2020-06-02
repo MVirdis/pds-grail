@@ -53,6 +53,7 @@ Node& Node::add_interval(Interval interval, int ind) {
 		labels[index].first = interval.first;
 		labels[index].second = interval.second;
 	}
+	return *this;
 }
 
 ostream& operator <<(ostream& ostr, const Node& node) {
