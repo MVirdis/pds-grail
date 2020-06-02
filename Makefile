@@ -1,3 +1,12 @@
+node_test: clean
+	mkdir build
+	cp Include/Node.h build
+	cp Node/Node.cpp build
+	cp Include/Types.h build
+	cp Node/test.cpp build
+	g++ -Wall -g -o build/node_test build/*.cpp -DDEBUG
+	rm -rf build/*.cpp build/*.h
+
 graph_test: clean
 	mkdir build
 	cp Include/Graph.h build
