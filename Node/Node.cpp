@@ -35,7 +35,9 @@ Node& Node::add_interval(Interval interval, int index) {
 	int lim = 1+index-labels.size();
 
 	if (labels.size() > 0 && index >= 0 && index <= labels.size()-1) {
+#ifdef DEBUG
 		cout << "entrato" << endl;
+#endif
 		labels[index].first = interval.first;
 		labels[index].second = interval.second;
 	}
@@ -43,7 +45,9 @@ Node& Node::add_interval(Interval interval, int index) {
 	else {
 		for(int i = 0; i < lim; ++i) {
 			labels.push_back(in);
+#ifdef DEBUG
 			cout << i << endl;
+#endif
 		}
 		labels[index].first = interval.first;
 		labels[index].second = interval.second;
@@ -51,6 +55,7 @@ Node& Node::add_interval(Interval interval, int index) {
 }
 
 ostream& operator <<(ostream& ostr, const Node& node) {
+#ifdef DEBUG
 	ostr << "Node id: " << node.id << endl;
 	ostr << "Labels: ";
 	for (int i = 0; i < node.labels.size(); ++i) {
@@ -69,6 +74,10 @@ ostream& operator <<(ostream& ostr, const Node& node) {
 			ostr << " , ";
 	}
 	return ostr;
+#else
+	ostr << node.id;
+	return ostr;
+#endif
 }
 
 
