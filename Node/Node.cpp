@@ -82,9 +82,12 @@ ostream& operator <<(ostream& ostr, const Node& node) {
 #endif
 }
 
+Node& Node::lock(void) {
+	this->mutex.lock();
+	return *this;
+}
 
-
-
-
-
-
+Node& Node::unlock(void) {
+	this->mutex.unlock();
+	return *this;
+}
