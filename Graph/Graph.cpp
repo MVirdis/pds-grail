@@ -57,21 +57,37 @@ Graph& Graph::from_file(char* filepath) {
         int nodeid, childid;
 
 #ifdef DEBUG
-        cout<<id<<": "<<line<<endl;
+        cout<<"LINE("<<id<<"): \""<<line<<"\""<<endl;
 #endif
 
-        if (!(iss >> nodeid) || nodeid != (id++)) {
+        if (!(iss >> nodeid)) {
 #ifdef DEBUG
-            cout<<"Mismatch read "<<nodeid<<" for line "<<id-1<<endl;
+            cout<<" this line doesn't start with a number. Skipping..."<<endl;
 #endif
             continue;
         }
 
 #ifdef DEBUG
-        cout<<"Has child: ";
+        cout<<"Node "<<nodeid;
+#endif
+
+        if (nodeid != (id++)) {
+#ifdef DEBUG
+            // Kindof assert
+            cout<<"Mismatch read "<<nodeid<<" for line "<<id-1<<endl;
+#endif
+        }
+
+        iss.clear();
+
+        // Skip ": " characters that disturb reading of children ids
+        iss.seekg(2, ios_base::cur);
+
+#ifdef DEBUG
+        cout<<" Has children: ";
 #endif
         // Read remaining numbers in line
-        while((iss >> childid)) {
+        while((iss>>childid)) {
 #ifdef DEBUG
             cout<<childid<<" ";
 #endif
@@ -122,10 +138,18 @@ uint Graph::get_num_nodes(void) const {
 }
 
 ostream& operator <<(ostream& ostr, const Graph& graph) {
+#ifndef DEBUG
     ostr<<"Nodes: [ ";
     for (uint i=0; i<graph.nodes.size()-1; ++i) {
         ostr<<*(graph.nodes[i])<<", ";
     }
     ostr<<*(*graph.nodes.end())<<" ]";
     return ostr;
+#else
+    ostr<<"Nodes:"<<endl;
+    for (uint i=0; i<graph.nodes.size(); ++i) {
+        ostr<<*(graph.nodes[i])<<": ";
+    }
+    return ostr;
+#endif
 }
