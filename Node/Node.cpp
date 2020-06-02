@@ -14,7 +14,7 @@ uint Node::get_id(void) const {
 
 Interval Node::get_interval(int index) const {
 	Interval i(0,0);
-	if (index >= labels.size())
+	if ((uint)index >= labels.size())
 		return i;
 	i.first = labels[index].first;
 	i.second = labels[index].second;
@@ -30,8 +30,9 @@ Node& Node::add_child(Node *child) {
 	return *this;
 }
 
-Node& Node::add_interval(Interval interval, int index) {
+Node& Node::add_interval(Interval interval, int ind) {
 	Interval in(0,0);
+	uint index = (uint)ind;
 	int lim = 1+index-labels.size();
 
 	if (labels.size() > 0 && index >= 0 && index <= labels.size()-1) {
@@ -58,7 +59,7 @@ ostream& operator <<(ostream& ostr, const Node& node) {
 #ifdef DEBUG
 	ostr << "Node id: " << node.id << endl;
 	ostr << "Labels: ";
-	for (int i = 0; i < node.labels.size(); ++i) {
+	for (uint i = 0; i < node.labels.size(); ++i) {
 		ostr << "(" << node.labels[i].first << "," << node.labels[i].second << ")";
 		if (i == node.labels.size()-1)
 			ostr << endl;
@@ -66,7 +67,7 @@ ostream& operator <<(ostream& ostr, const Node& node) {
 			ostr << " ; ";
 	}
 	ostr << "Reachable nodes: {";
-	for (int i = 0; i < node.adj_nodes.size(); ++i) {
+	for (uint i = 0; i < node.adj_nodes.size(); ++i) {
 		ostr << node.adj_nodes[i]->id;
 		if (i == node.adj_nodes.size()-1)
 			ostr << "}" << endl;
