@@ -4,16 +4,14 @@
 #include <unistd.h>
 #include <cstdlib>
 
-#include "Graph.h"
-#include "Node.h"
-#include "Thread.h"
 #include "Types.h"
+#include "Graph.h"
+#include "Thread.h"
 
 using namespace std;
 
 bool randomized_labelling(Graph& G, const uint d) {
 #if PARALLEL_VISITS
-    uint rank = 1u;
     vector<Node*> roots = G.get_roots(true);
     // Visitor matrix: rows for roots, columns for offsets
     RandomVisitor visitors[d*roots.size()];
@@ -26,6 +24,7 @@ bool randomized_labelling(Graph& G, const uint d) {
 
     // Start all threads
     for(uint i=0; i<d; ++i) {
+        ranks[i] = 1u;
         for(uint j=0; j<roots.size(); ++j)
             visitors[i+j*d].set_graph(G)
                            .set_offset(i)
@@ -39,7 +38,6 @@ bool randomized_labelling(Graph& G, const uint d) {
     // Wait for all threads
     barr.wait();
 #else
-    uint rank = 1u;
     vector<Node*> roots = G.get_roots(true);
     // One visitor for each dimension
     RandomVisitor visitors[d];
@@ -52,6 +50,7 @@ bool randomized_labelling(Graph& G, const uint d) {
 
     // Start all threads
     for(uint i=0; i<d; ++i) {
+        ranks[i] = 1u;
         visitors[i].set_graph(G)
                     .set_offset(i)
                     .set_rank(ranks[i])
@@ -63,9 +62,10 @@ bool randomized_labelling(Graph& G, const uint d) {
     // Wait for all threads
     barr.wait();
 #endif
+    return true;
 }
 
-uint find_min_rank(vector<Node*> children, uint dimension) {
+static uint find_min_rank(vector<Node*> children, uint dimension) {
     uint minval;
     uint val;
 
