@@ -28,3 +28,7 @@ Mutex& Mutex::unlock(void) {
     pthread_mutex_unlock(&(this->tmutex));
     return *this;
 }
+
+Mutex::~Mutex() {
+    pthread_mutex_destroy(&(this->tmutex));
+}
