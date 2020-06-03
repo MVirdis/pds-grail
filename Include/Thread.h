@@ -77,7 +77,6 @@ class RandomVisitor {
   public:
 	/* Constructors */
 	RandomVisitor();
-	RandomVisitor(Graph& G, int off);
 
 	/* Methods */
 	RandomVisitor& run(void);
