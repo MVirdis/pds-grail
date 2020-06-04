@@ -6,7 +6,7 @@
 
 #include "Generator.h"
 
-int make_graph(int num_nodes, int max_num_edges, int num_queries, char* fname) {
+int make_graph(int num_nodes, int max_num_edges, int num_queries, const char* fname) {
   char name[L];
   int i, j, jj, k, r, v_n, e_max, depth_max, e_tot, query_n, stop;
   n_t *row;
