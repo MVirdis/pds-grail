@@ -11,6 +11,28 @@
 
 using namespace std;
 
+static uint find_min_rank(vector<Node*> children, uint dimension) {
+    uint minval;
+    uint val;
+
+    if (children.size() == 0) {
+        return 0u;
+    }
+
+    minval = children[0]->get_interval(dimension).first;
+
+    for(uint i=1; i<children.size(); ++i) {
+        children[i]->lock();
+        val = children[i]->get_interval(dimension).first;
+        children[i]->unlock();
+        if ( val < minval) {
+            minval = val;
+        }
+    }
+
+    return minval;
+}
+
 bool randomized_labelling(Graph& G, const uint d) {
 #if PARALLEL_VISITS
     vector<Node*> roots = G.get_roots(true);
@@ -66,26 +88,6 @@ bool randomized_labelling(Graph& G, const uint d) {
     return true;
 }
 
-static uint find_min_rank(vector<Node*> children, uint dimension) {
-    uint minval;
-    uint val;
-
-    if (children.size() == 0) {
-        return 0u;
-    }
-
-    minval = children[0]->get_interval(dimension).first;
-
-    for(uint i=1; i<children.size(); ++i) {
-        val = children[i]->get_interval(dimension).first;
-        if ( val < minval) {
-            minval = val;
-        }
-    }
-
-    return minval;
-}
-
 bool randomized_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>& visited) {
     if (x == NULL) return false;
     if (visited.count(x->get_id()) > 0) // Node already visited
@@ -105,26 +107,85 @@ bool randomized_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>&
     for(uint j=0; j<children.size(); ++j)
         randomized_visit(children[j], i, G, rank, visited);
     
-    // Compute minimum rank across children
-    uint min_rank = find_min_rank(children, i);
+    if (children.size() == 0u) {
+        x->add_interval(Interval(rank, rank), i);
+    } else {
+
+        // Compute minimum rank across children
+        uint min_rank = find_min_rank(children, i);
 
 #ifdef DEBUG
 #if !PARALLEL_VISITS
-    cout<<"[Thread "<<i<<"] Min rank below me is "<<min_rank;
-    cout<<"; my rank is "<<rank<<endl;
+        cout<<"[Thread "<<i<<"] Min rank below me is "<<min_rank;
+        cout<<"; my rank is "<<rank<<endl;
 #endif
 #endif
 
-    // Set this node's interval
-    x->lock();
-    x->add_interval(Interval(min(rank, min_rank), rank), i);
-    x->unlock();
+        // Set this node's interval
+        x->lock();
+        x->add_interval(Interval(min(rank, min_rank), rank), i);
+        x->unlock();
+    }
 
 #ifdef DEBUG
 #if !PARALLEL_VISITS
     cout<<"[Thread "<<i<<"] Updated my node:"<<endl;
     cout<<*x<<endl<<endl;
 #endif
+#endif
+
+    ++rank;
+
+    return true;
+}
+
+bool sequential_labelling(Graph& G, const uint d) {
+    for(uint i=0; i<d; ++i) {
+        vector<Node*> roots = G.get_roots(true);
+        unordered_set<uint> visited_nodes;
+        uint rank=1u;
+        for(uint j=0; j<roots.size(); ++j){
+            sequential_visit(roots[j], i, G, rank, visited_nodes);
+        }
+    }
+
+    return true;
+}
+
+bool sequential_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>& visited) {
+    if (x == NULL) return false;
+    if (visited.count(x->get_id()) > 0) // Node already visited
+        return false;
+    
+    visited.insert(x->get_id()); // Add this node to already visited
+
+#ifdef DEBUG
+    cout<<"Visiting node "<<x->get_id()<<endl;
+    usleep( ( rand()%100 +1 ) *100); // Sleep from 1ms to 100ms
+#endif
+
+    // Call on children in random order
+    vector<Node*> children = G.get_children(x, true);
+    for(uint j=0; j<children.size(); ++j)
+        sequential_visit(children[j], i, G, rank, visited);
+    
+    if (children.size() == 0u) {
+        x->add_interval(Interval(rank, rank), i);
+    } else {
+        // Compute minimum rank across children
+        uint min_rank = find_min_rank(children, i);
+
+#ifdef DEBUG
+        cout<<"Min rank below me is "<<min_rank;
+        cout<<"; my rank is "<<rank<<endl;
+#endif
+
+        // Set this node's interval
+        x->add_interval(Interval(min(rank, min_rank), rank), i);
+    }
+#ifdef DEBUG
+    cout<<"Updated my node:"<<endl;
+    cout<<*x<<endl<<endl;
 #endif
 
     ++rank;
