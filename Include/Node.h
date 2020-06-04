@@ -4,10 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <mutex>
 
 #include "Types.h"
-
-class Mutex;
 
 /*
 *	A node of the directed Graph.
@@ -28,7 +27,7 @@ class Node {
 	std::vector<Interval> labels;
 	uint id;						// Node number
 	std::vector<Node*> adj_nodes;	// Reachable nodes
-	Mutex* mutex;
+	std::mutex node_lock;
 	Node(const Node& node);			// Copy constructor blocked
 
   public:
@@ -49,7 +48,7 @@ class Node {
 	/* Operators */
 	friend std::ostream& operator <<(std::ostream& ostr, const Node& node);
 
-	~Node(void);
+	//~Node();
 };
 
 #endif

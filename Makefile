@@ -6,7 +6,7 @@ grail_test:
 	cp Node/Node.cpp build
 	cp Thread/Sync.cpp build
 	cp Thread/RandomVisitor.cpp build
-	g++ -Wall -g -o build/grail -DDEBUG -std=c++11 -lpthread build/*.cpp
+	g++ -Wall -g -o build/grail -DDEBUG -std=c++11 build/*.cpp
 	rm -rf build/*.h build/*.cpp
 
 node_test:
@@ -16,7 +16,7 @@ node_test:
 	cp Node/test.cpp build
 	cp Thread/Sync.cpp build
 	cp Thread/RandomVisitor.cpp build
-	g++ -Wall -g -std=c++11 -o build/node_test -lpthread build/*.cpp -DDEBUG
+	g++ -Wall -g -std=c++11 -o build/node_test build/*.cpp -DDEBUG
 	rm -rf build/*.cpp build/*.h
 
 graph_test:
@@ -28,7 +28,7 @@ graph_test:
 	cp Generator/dag_generator.c build
 	cp Thread/Sync.cpp build
 	cp Thread/RandomVisitor.cpp build
-	g++ -Wall -g -std=c++11 -o build/graph_test -lpthread build/dag_generator.c build/*.cpp -DDEBUG
+	g++ -Wall -g -std=c++11 -o build/graph_test build/dag_generator.c build/*.cpp -DDEBUG
 	rm -rf build/*.c build/*.cpp build/*.h
 
 generator:

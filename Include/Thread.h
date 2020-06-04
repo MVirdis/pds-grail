@@ -1,44 +1,12 @@
 #ifndef _THREAD_H_
 #define _THREAD_H_
 
-#include <pthread.h>
 #include <unordered_set>
+#include <thread>
 
 #include "Types.h"
 #include "Graph.h"
-
-/*
-*	A handy class that handles a pthread_barrier
-*
-*/
-class Barrier {
-	pthread_barrier_t tbarrier;
-  public:
-	/* Constructors */
-	Barrier(uint how_many);
-
-	/* Methods */
-	Barrier& wait(void);
-
-	~Barrier();
-};
-
-/*
-*	A handy class that handles a pthread_mutex
-*
-*/
-class Mutex {
-	pthread_mutex_t tmutex;
-  public:
-	/* Constructors */
-	Mutex();
-
-	/* Methods */
-	Mutex& lock(void);
-	Mutex& unlock(void);
-
-	~Mutex();
-};
+#include "Sync.h"
 
 /*
 *	A handy class that lets start a thread that executes
@@ -47,7 +15,7 @@ class Mutex {
 *	This class should adjust accordingly to PARALLEL_VISITS
 */
 class RandomVisitor {
-	pthread_t tid;
+	std::thread t;
 	Graph& G;
 	uint offset;
 	Node* x;
@@ -55,7 +23,8 @@ class RandomVisitor {
 	uint& rank;
 	std::unordered_set<uint>& visited_set;
 
-	static void* start_routine(void*);
+	// Change this function's signature as needed (should be static)
+	static void start_routine();
 
   public:
 	/* Constructors */

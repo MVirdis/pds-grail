@@ -1,13 +1,11 @@
 #include <vector>
 
 #include "Node.h"
-#include "Thread.h"
 
 using namespace std;
 
 Node::Node(uint id) {
 	this->id = id;
-	this->mutex = new Mutex();
 }
 
 uint Node::get_id(void) const {
@@ -85,15 +83,11 @@ ostream& operator <<(ostream& ostr, const Node& node) {
 }
 
 Node& Node::lock(void) {
-	this->mutex->lock();
+	this->node_lock.lock();
 	return *this;
 }
 
 Node& Node::unlock(void) {
-	this->mutex->unlock();
+	this->node_lock.unlock();
 	return *this;
-}
-
-Node::~Node() {
-	delete this->mutex;
 }
