@@ -7,6 +7,7 @@
 #include "Types.h"
 #include "Graph.h"
 #include "Thread.h"
+#include "Grail.h"
 
 using namespace std;
 
