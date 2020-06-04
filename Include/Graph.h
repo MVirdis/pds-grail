@@ -23,7 +23,7 @@ class Graph {
 	Graph(void);
 
 	/* Methods */
-	Graph& from_file(char* filepath);
+	Graph& from_file(const char* filepath);
 
 	/* Getters */
 	std::vector<Node*> get_roots(bool random=true) const;

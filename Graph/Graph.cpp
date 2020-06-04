@@ -13,7 +13,7 @@ Graph::Graph(void) {
     this->num_nodes = 0u;
 }
 
-Graph& Graph::from_file(char* filepath) {
+Graph& Graph::from_file(const char* filepath) {
     ifstream file;
     uint num;
 
