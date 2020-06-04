@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <mutex>
 
 #include "Graph.h"
 
@@ -152,4 +153,21 @@ ostream& operator <<(ostream& ostr, const Graph& graph) {
     }
     return ostr;
 #endif
+}
+
+uint Graph::compute_size(uint d) const {
+    uint size = 0u;
+
+    // Graph dependent size
+    size += sizeof(Node*) * nodes.size();
+    size += sizeof(Node*) * roots.size();
+    size += sizeof(uint);
+
+    // Node dependent size
+    size += (sizeof(uint) + sizeof(mutex) + sizeof(Interval) * d)*nodes.size();
+    for(uint i=0; i<nodes.size(); ++i) {
+        size += sizeof(Node*)*(nodes[i]->get_children().size());
+    }
+
+    return size;
 }
