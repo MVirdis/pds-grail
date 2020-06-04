@@ -54,13 +54,13 @@ bool randomized_labelling(Graph& G, const uint d) {
         ranks[i] = 1u;
         visitors[i].set_graph(G)
                     .set_offset(i)
-                    .set_rank(ranks[i])
-                    .set_visited_set(visited_sets[i])
-                    .set_barrier(barr)
+                    .set_rank(&ranks[i])
+                    .set_visited_set(&visited_sets[i])
+                    .set_barrier(&barr)
                     .run();
     }
 
-    // Wait for all threads
+    // for all threads
     barr.wait();
 #endif
     return true;
@@ -86,7 +86,7 @@ static uint find_min_rank(vector<Node*> children, uint dimension) {
     return minval;
 }
 
-bool randomized_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>& visited) {
+bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>& visited) {
     if (x == NULL) return false;
     if (visited.count(x->get_id()) > 0) // Node already visited
         return false;
