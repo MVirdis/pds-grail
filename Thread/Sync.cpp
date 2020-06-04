@@ -1,34 +1,20 @@
-#include "Thread.h"
+#include "Sync.h"
+
+using namespace std;
 
 // Barrier
-Barrier::Barrier(uint how_many) {
-    pthread_barrier_init(&(this->tbarrier), NULL, how_many);
+Barrier::Barrier(uint how_many) : lock(unique_lock<mutex>(m, defer_lock)) {
+    this->remaining = how_many;
 }
 
-Barrier::~Barrier() {
-    pthread_barrier_destroy(&(this->tbarrier));
-}
-
-Barrier& Barrier::wait(void) {
-    pthread_barrier_wait(&(this->tbarrier));
-    return *this;
-}
-
-// Mutex
-Mutex::Mutex() {
-    pthread_mutex_init(&(this->tmutex), NULL);
-}
-
-Mutex& Mutex::lock(void) {
-    pthread_mutex_lock(&(this->tmutex));
-    return *this;
-}
-
-Mutex& Mutex::unlock(void) {
-    pthread_mutex_unlock(&(this->tmutex));
-    return *this;
-}
-
-Mutex::~Mutex() {
-    pthread_mutex_destroy(&(this->tmutex));
+void Barrier::wait(void) {
+    lock.lock();
+    --remaining;
+    if (remaining > 0) {
+        while (remaining > 0)
+            cv.wait(this->lock);
+    } else {
+        cv.notify_all();
+    }
+    lock.unlock();
 }
