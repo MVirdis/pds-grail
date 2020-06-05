@@ -15,8 +15,7 @@
 using namespace std;
 
 void graph_creation();
-void dgrail_graph();
-void seq_grail_graph();
+void grail_graph(int option);
 
 int main() {
 
@@ -35,10 +34,10 @@ int main() {
                     graph_creation();
                     break;
                 case 2:
-                    seq_grail_graph();
+                    grail_graph(2);
                     break;
                 case 3:
-                    dgrail_graph();
+                    grail_graph(3);
                     break;
                 default:
                     cout<<"Not Supported"<<endl;
@@ -64,23 +63,7 @@ void graph_creation() {
     cout<<endl;
 }
 
-void dgrail_graph() {
-    Graph G;
-    string name;
-    ifstream graph_file;
-    cout<<endl<<"GRAIL Test with D threads and Graph class"<<endl;
-    cout<<"What is the name of the graph file? "; (cin>>name).get();
-    graph_file.open(name);
-    if (!graph_file.is_open()) {
-        cerr<<"Couldn't open the file. Is the name right?"<<endl;
-        return;
-    }
-    graph_file.close();
-    G.from_file(name.data());
-    cout<<G<<endl;
-}
-
-void seq_grail_graph() {
+void grail_graph(int option) {
     Graph G;
     string name;
     ifstream graph_file;
@@ -101,9 +84,23 @@ void seq_grail_graph() {
 
     cout<<"What is the value of d for the index? "; (cin>>d).get();
 
-    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    sequential_labelling(G, d); // Builds Index
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
+    chrono::steady_clock::time_point begin, end;
+
+    switch (option) {
+        case 2:
+            begin = chrono::steady_clock::now();
+            sequential_labelling(G, d); // Builds Index
+            end = chrono::steady_clock::now();
+            break;
+        case 3:
+            begin = chrono::steady_clock::now();
+            randomized_labelling(G, d); // Builds Index
+            end = chrono::steady_clock::now();
+            break;
+        default:
+            cerr<<"Bad Option!"<<endl;
+            return;
+    }
 
     cout<<"The index will be shown:"<<endl;
     for(uint j=0; j<min(G.get_num_nodes(), 20u); ++j) {
