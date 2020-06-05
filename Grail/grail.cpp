@@ -22,9 +22,7 @@ static uint find_min_rank(vector<Node*> children, uint dimension) {
     minval = children[0]->get_interval(dimension).first;
 
     for(uint i=1; i<children.size(); ++i) {
-        children[i]->lock();
         val = children[i]->get_interval(dimension).first;
-        children[i]->unlock();
         if ( val < minval) {
             minval = val;
         }
@@ -88,7 +86,7 @@ bool randomized_labelling(Graph& G, const uint d) {
     return true;
 }
 
-bool randomized_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>& visited) {
+bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>& visited) {
     if (x == NULL) return false;
     if (visited.count(x->get_id()) > 0) // Node already visited
         return false;
@@ -112,6 +110,7 @@ bool randomized_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>&
     } else {
 
         // Compute minimum rank across children
+        x->lock();
         uint min_rank = find_min_rank(children, i);
 
 #ifdef DEBUG
@@ -122,7 +121,6 @@ bool randomized_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>&
 #endif
 
         // Set this node's interval
-        x->lock();
         x->add_interval(Interval(min(rank, min_rank), rank), i);
         x->unlock();
     }
