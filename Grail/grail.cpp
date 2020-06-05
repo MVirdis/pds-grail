@@ -52,7 +52,7 @@ bool randomized_labelling(Graph& G, const uint d) {
     // Start all threads
     for(uint i=0; i<d; ++i) {
         ranks[i] = 1u;
-        visitors[i].set_graph(G)
+        visitors[i].set_graph(&G)
                     .set_offset(i)
                     .set_rank(&ranks[i])
                     .set_visited_set(&visited_sets[i])

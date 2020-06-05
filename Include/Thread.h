@@ -40,7 +40,7 @@ class RandomVisitor {
 	RandomVisitor& set_visited_set(std::unordered_set<uint> *set);
 	RandomVisitor& set_rank(uint *rank);
 
-	~RandomVisitor();
+	//~RandomVisitor();
 };
 
 
