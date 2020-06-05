@@ -7,7 +7,6 @@
 #include "Types.h"
 
 class Barrier {
-       std::unique_lock<std::mutex> lock;
        std::condition_variable cv;
        std::mutex m;
        uint remaining;
