@@ -47,7 +47,8 @@ Node& Node::add_interval(Interval interval, int ind) {
 		for(int i = 0; i < lim; ++i) {
 			labels.push_back(in);
 #ifdef DEBUG
-			cout << "[Node "<<id<<"] Added empty interval in pos " << i << endl;
+			if (i<lim-1)
+				cout << "[Node "<<id<<"] Added empty interval in pos " << i << endl;
 #endif
 		}
 		labels[index].first = interval.first;
