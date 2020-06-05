@@ -36,17 +36,17 @@ RandomVisitor& RandomVisitor::set_rank(uint *rank) {
 }
 
 RandomVisitor& RandomVisitor::run() {
-#if !PARALLEL_VISITS
 	this->t = std::thread(start_routine, G, offset, barrier, rank, visited_set);
 	this->t.detach();
 	return *this;
-#endif
 }
 
 void RandomVisitor::start_routine(Graph *G, uint offset, Barrier *barrier, uint* rank, std::unordered_set<uint> *visited_set) {
+#if !PARALLEL_VISITS
 	std::vector<Node*> roots = G->get_roots(true);
-		for (int i = 0; i < roots.size(); ++i)
-			randomized_visit(roots[i], offset, *G, *rank, *visited_set);
-		barrier->wait();
+	for (uint i = 0; i < roots.size(); ++i)
+		randomized_visit(roots[i], offset, *G, *rank, *visited_set);
+	barrier->wait();
+#endif
 }
 
