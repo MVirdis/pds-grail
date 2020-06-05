@@ -5,6 +5,8 @@ AN: Alessandro
 * **main**: MV
 * **randomized_labelling**: MV
 * **randomized_visit**: MV
+* **sequential_labelling**: MV
+* **sequential_visit**: MV
 * **find_min_rank**: MV
 * **reachable**: AN
 
@@ -14,6 +16,7 @@ AN: Alessandro
 * **get_roots**: MV
 * **get_num_nodes**: MV
 * **operator <<**: MV
+* **compute_size**: MV
 * **~Graph()**: MV
 * Tests: MV
 
@@ -44,12 +47,6 @@ AN: Alessandro
 * **set_rank**: AN
 * **~RandomVisitor**: AN
 * Tests: AN
-
--- Mutex --
-* **Mutex()**: MV
-* **lock**: MV
-* **unlock**: MV
-* **~Mutex()**: MV
 
 -- Barrier --
 * **Barrier(count)**: MV
