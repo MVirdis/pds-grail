@@ -1,18 +1,14 @@
 grail_test:
 	mkdir -p build
-	cp Include/Generator.h build
-	cp Include/Types.h build
-	cp Include/Node.h build
-	cp Include/Sync.h build
-	cp Include/Graph.h build
-	cp Include/Grail.h build
-	cp Grail/*.cpp build
+	cp Include/*.h build
+	cp Grail/main.cpp build
+	cp Grail/grail.cpp build
 	cp Graph/Graph.cpp build
 	cp Node/Node.cpp build
 	cp Thread/Sync.cpp build
-	#cp Thread/RandomVisitor.cpp build
+	cp Thread/RandomVisitor.cpp build
 	cp Generator/dag_generator.c build
-	g++ -Wall -g -o build/grail -std=c++11 build/*.cpp build/*.c
+	g++ -Wall -pthread -g -o build/grail -std=c++11 build/*.cpp build/*.c
 	rm -rf build/*.h build/*.cpp build/*.c
 
 node_test:

@@ -74,15 +74,15 @@ bool randomized_labelling(Graph& G, const uint d) {
     // Start all threads
     for(uint i=0; i<d; ++i) {
         ranks[i] = 1u;
-        visitors[i].set_graph(G)
+        visitors[i].set_graph(&G)
                     .set_offset(i)
-                    .set_rank(ranks[i])
-                    .set_visited_set(visited_sets[i])
-                    .set_barrier(barr)
+                    .set_rank(&ranks[i])
+                    .set_visited_set(&visited_sets[i])
+                    .set_barrier(&barr)
                     .run();
     }
 
-    // Wait for all threads
+    // for all threads
     barr.wait();
 #endif
     return true;

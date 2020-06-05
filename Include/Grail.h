@@ -22,7 +22,7 @@
 
 bool randomized_labelling(Graph&, const uint);
 
-bool randomized_visit(Node*, int, Graph&, uint& , std::unordered_set<uint>&);
+bool randomized_visit(Node*, uint, Graph&, uint& , std::unordered_set<uint>&);
 
 bool sequential_labelling(Graph& G, const uint d);
 
