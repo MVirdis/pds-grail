@@ -5,7 +5,9 @@
 using namespace std;
 
 Node::Node(uint id) {
-	// TODO
+	this->id = id;
+	this->adj_nodes = NULL;
+	this->neigh = 0;
 }
 
 uint Node::get_id(void) const {
@@ -13,18 +15,35 @@ uint Node::get_id(void) const {
 }
 
 vector<Node*> Node::get_children(void) const {
-	// TODO
+	if (this->adj_nodes == NULL)
+		return vector<Node*>();
+	
+	vector<Node*> children;
+	for (int i = 0; i < this->neigh; ++i)
+		children.push_back(this->adj_nodes[i]);
+	return children;
 }
 
-Node& Node::set_children(vector<Node*> children) {
-	// TODO
+Node& Node::set_children(vector<Node*>& children) {
+	this->neigh = children.size();
+	this->adj_nodes = new Node*[neigh];
+	for (int i = 0; i < this->neigh; ++i) 
+		this->adj_nodes[i] = children[i];
+	return *this;
 }
 
 ostream& operator <<(ostream& ostr, const Node& node) {
 #ifdef DEBUG
-	// TODO
-#else
+	cout << "Direct linked nodes: ";
+	for (int i = 0; i < node.neigh; ++i)
+		ostr << "[" << node.adj_nodes[i]->get_id() << "]";
+	ostr << endl;
+#endif
 	ostr << node.id;
 	return ostr;
-#endif
+}
+
+Node::~Node() {
+	//for (int i = 0; i < neigh; ++i) 
+		delete adj_nodes;
 }

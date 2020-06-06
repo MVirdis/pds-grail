@@ -25,6 +25,7 @@
 class Node {
 	uint id;						// Node number
 	Node** adj_nodes;				// Reachable nodes
+	int neigh;
 	Node(const Node& node);			// Copy constructor blocked
 
   public:

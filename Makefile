@@ -16,8 +16,6 @@ node_test:
 	cp Include/*.h build
 	cp Node/Node.cpp build
 	cp Node/test.cpp build
-	cp Thread/Sync.cpp build
-	cp Thread/RandomVisitor.cpp build
 	g++ -Wall -g -std=c++11 -o build/node_test build/*.cpp -DDEBUG
 	rm -rf build/*.cpp build/*.h
 

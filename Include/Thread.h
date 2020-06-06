@@ -33,7 +33,6 @@ class RandomVisitor {
 
 	/* Methods */
 	RandomVisitor& run(void);
-	//int wait(void);
 	RandomVisitor& set_graph(Graph *G);
 	RandomVisitor& set_offset(uint i);
 	RandomVisitor& set_start_node(Node* x);

@@ -10,6 +10,6 @@ Index* randomized_labelling(Graph&, const uint);
 
 Index* sequential_labelling(Graph& G, const uint d);
 
-bool randomized_visit(Node* x, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index);
+bool randomized_visit(Node* x, Graph& G, uint& rank, std::unordered_set<uint>& visited, Index& index);
 
 #endif
