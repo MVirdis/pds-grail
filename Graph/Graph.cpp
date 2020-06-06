@@ -171,3 +171,9 @@ uint Graph::compute_size(uint d) const {
 
     return size;
 }
+
+Graph::~Graph() {
+    for(uint j=0; j<nodes.size(); ++j) {
+        delete nodes[j];
+    }
+}

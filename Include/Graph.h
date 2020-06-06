@@ -34,6 +34,8 @@ class Graph {
 
 	/* Operators */
 	friend std::ostream& operator <<(std::ostream& ostr, const Graph& Graph);
+
+	~Graph();
 };
 
 #endif
