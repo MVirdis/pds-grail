@@ -16,7 +16,7 @@ vector<Node*> Node::get_children(void) const {
 	// TODO
 }
 
-Node& Node::add_child(Node *child) {
+Node& Node::set_children(vector<Node*> children) {
 	// TODO
 }
 

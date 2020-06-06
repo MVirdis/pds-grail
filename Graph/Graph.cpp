@@ -18,6 +18,7 @@ Graph::Graph(void) {
 Graph& Graph::from_file(const char* filepath) {
     ifstream file;
     uint num;
+    vector<Node*> node_children;
 
     file.open(filepath);
     file >> num;
@@ -87,12 +88,14 @@ Graph& Graph::from_file(const char* filepath) {
 #ifdef DEBUG
             cout<<childid<<" ";
 #endif
-            nodes[nodeid]->add_child(nodes[childid]);
+            node_children.push_back(nodes[childid]);
             is_root[childid] = false;
         }
 #ifdef DEBUG
         cout<<endl;
 #endif
+        nodes[nodeid]->set_children(node_children);
+        node_children.clear();
     }
 
     // Save root nodes
