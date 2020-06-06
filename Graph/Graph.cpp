@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 #include <mutex>
+#include <new>
 
 #include "Graph.h"
 
@@ -26,7 +27,7 @@ Graph& Graph::from_file(const char* filepath) {
 #endif
 
 #ifdef DEBUG
-    cout<<"Allocating al nodes... ";
+    cout<<"Allocating all nodes... ";
 #endif
 
     // Allocate flags for root nodes
@@ -34,15 +35,9 @@ Graph& Graph::from_file(const char* filepath) {
 
     // Allocate num empty nodes
     for(uint i=0; i<num; ++i) {
-        Node* new_node = new Node(i);
-        if (new_node == NULL) {
-            cerr<<"Error allocating new node!"<<endl;
-            delete[] is_root;
-            file.close();
-            return *this;
-        }
-        is_root[i] = true;
-        nodes.push_back(new_node);
+            Node* new_node = new Node(i);
+            is_root[i] = true;
+            nodes.push_back(new_node);
     }
 
 #ifdef DEBUG
