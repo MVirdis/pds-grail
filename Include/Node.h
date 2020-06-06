@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <mutex>
 
 #include "Types.h"
 
@@ -24,10 +23,8 @@
 *
 */
 class Node {
-	std::vector<Interval> labels;
 	uint id;						// Node number
-	std::vector<Node*> adj_nodes;	// Reachable nodes
-	std::mutex node_lock;
+	Node** adj_nodes;				// Reachable nodes
 	Node(const Node& node);			// Copy constructor blocked
 
   public:
@@ -42,13 +39,11 @@ class Node {
 	/* Methods */
 	Node& add_child(Node* child);
 	Node& add_interval(Interval interval, int index);
-	Node& lock(void);
-	Node& unlock(void);
 
 	/* Operators */
 	friend std::ostream& operator <<(std::ostream& ostr, const Node& node);
 
-	//~Node();
+	~Node();
 };
 
 #endif

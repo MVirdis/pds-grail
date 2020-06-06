@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "Types.h"
+#include "Index.h"
 #include "Graph.h"
 #include "Sync.h"
 
@@ -39,6 +40,7 @@ class RandomVisitor {
 	RandomVisitor& set_barrier(Barrier *barrier);
 	RandomVisitor& set_visited_set(std::unordered_set<uint> *set);
 	RandomVisitor& set_rank(uint *rank);
+	RandomVisitor& set_index(Index* index);
 
 	//~RandomVisitor();
 };
