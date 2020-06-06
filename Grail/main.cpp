@@ -10,7 +10,7 @@
 
 #define PARAMS "Param 1: graph file;\nParam 2: integer d;\nParam 3: query file"
 #define MENU_HEADER "[GRAIL Performance Tester]\nSelect one of the following options:"
-#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Run Sequencial GRAIL with Graph, Node\n   3. Run GRAIL with Graph, Node on d threads\n   4. Run GRAIL with Graph, Node on R*d threads"
+#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Run Sequencial GRAIL with Graph, Node\n   3. Run GRAIL with Graph, Node on d threads"
 
 using namespace std;
 

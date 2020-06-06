@@ -33,33 +33,6 @@ static uint find_min_rank(vector<Node*> children, Index& index) {
 }
 
 Index* randomized_labelling(Graph& G, const uint d) {
-#if PARALLEL_VISITS
-    vector<Node*> roots = G.get_roots(true);
-    // Visitor matrix: rows for roots, columns for offsets
-    RandomVisitor visitors[d*roots.size()];
-    // All threads with equal offset value have same rank var
-    // and same visited set
-    uint ranks[d];
-    unordered_set<uint> visited_sets[d];
-
-    Barrier barr(d*roots.size() + 1);
-
-    // Start all threads
-    for(uint i=0; i<d; ++i) {
-        ranks[i] = 1u;
-        for(uint j=0; j<roots.size(); ++j)
-            visitors[i+j*d].set_graph(G)
-                           .set_offset(i)
-                           .set_start_node(roots[j])
-                           .set_rank(ranks[i])
-                           .set_visited_set(visited_sets[i])
-                           .set_barrier(barr)
-                           .run();
-    }
-
-    // Wait for all threads
-    barr.wait();
-#else
     vector<Node*> roots = G.get_roots(true);
     // One visitor for each dimension
     RandomVisitor visitors[d];
@@ -87,7 +60,7 @@ Index* randomized_labelling(Graph& G, const uint d) {
 
     // for all threads
     barr.wait();
-#endif
+
     return indexes;
 }
 
@@ -114,10 +87,8 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
     visited.insert(x->get_id()); // Add this node to already visited
 
 #ifdef DEBUG
-#if !PARALLEL_VISITS
     cout<<"[Thread "<<i<<"] Visiting node "<<x->get_id()<<endl;
     usleep( ( rand()%100 +1 ) *100); // Sleep from 1ms to 100ms
-#endif
 #endif
 
     // Call on children in random order
@@ -134,10 +105,8 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
         uint min_rank = find_min_rank(children, index);
 
 #ifdef DEBUG
-#if !PARALLEL_VISITS
         cout<<"[Thread "<<i<<"] Min rank below me is "<<min_rank;
         cout<<"; my rank is "<<rank<<endl;
-#endif
 #endif
 
         Interval ll(min(rank, min_rank), rank);
@@ -147,10 +116,8 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
     }
 
 #ifdef DEBUG
-#if !PARALLEL_VISITS
     cout<<"[Thread "<<i<<"] Updated my node:"<<endl;
     cout<<*x<<endl<<endl;
-#endif
 #endif
 
     ++rank;
