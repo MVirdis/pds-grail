@@ -8,10 +8,11 @@
 #include "Graph.h"
 #include "Thread.h"
 #include "Grail.h"
+#include "Index.h"
 
 using namespace std;
 
-static uint find_min_rank(vector<Node*> children, uint dimension) {
+static uint find_min_rank(vector<Node*> children, Index& index) {
     uint minval;
     uint val;
 
@@ -19,10 +20,10 @@ static uint find_min_rank(vector<Node*> children, uint dimension) {
         return 0u;
     }
 
-    minval = children[0]->get_interval(dimension).first;
+    minval = index.get_interval(children[0]->get_id()).first;
 
     for(uint i=1; i<children.size(); ++i) {
-        val = children[i]->get_interval(dimension).first;
+        val = index.get_interval(children[i]->get_id()).first;
         if ( val < minval) {
             minval = val;
         }
@@ -31,7 +32,7 @@ static uint find_min_rank(vector<Node*> children, uint dimension) {
     return minval;
 }
 
-bool randomized_labelling(Graph& G, const uint d) {
+Index* randomized_labelling(Graph& G, const uint d) {
 #if PARALLEL_VISITS
     vector<Node*> roots = G.get_roots(true);
     // Visitor matrix: rows for roots, columns for offsets
@@ -66,16 +67,20 @@ bool randomized_labelling(Graph& G, const uint d) {
     // One visited set for each thread
     uint ranks[d];
     unordered_set<uint> visited_sets[d];
+    // One index for each thread
+    Index* indexes = new Index[d];
 
     Barrier barr(d + 1);
 
     // Start all threads
     for(uint i=0; i<d; ++i) {
         ranks[i] = 1u;
+        indexes[i].set_size(G.get_num_nodes());
         visitors[i].set_graph(&G)
                     .set_offset(i)
                     .set_rank(&ranks[i])
                     .set_visited_set(&visited_sets[i])
+                    .set_index(&indexes[i])
                     .set_barrier(&barr)
                     .run();
     }
@@ -83,10 +88,25 @@ bool randomized_labelling(Graph& G, const uint d) {
     // for all threads
     barr.wait();
 #endif
-    return true;
+    return indexes;
 }
 
-bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>& visited) {
+Index* sequential_labelling(Graph& G, const uint d) {
+    Index* indexes = new Index[d];
+    for(uint i=0; i<d; ++i) {
+        indexes[i].set_size(G.get_num_nodes());
+        vector<Node*> roots = G.get_roots(true);
+        unordered_set<uint> visited_nodes;
+        uint rank=1u;
+        for(uint j=0; j<roots.size(); ++j){
+            randomized_visit(roots[j], i, G, rank, visited_nodes, indexes[i]);
+        }
+    }
+
+    return indexes;
+}
+
+bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index) {
     if (x == NULL) return false;
     if (visited.count(x->get_id()) > 0) // Node already visited
         return false;
@@ -103,15 +123,15 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
     // Call on children in random order
     vector<Node*> children = G.get_children(x, true);
     for(uint j=0; j<children.size(); ++j)
-        randomized_visit(children[j], i, G, rank, visited);
+        randomized_visit(children[j], i, G, rank, visited, index);
     
     if (children.size() == 0u) {
-        x->add_interval(Interval(rank, rank), i);
+        Interval ll(rank, rank);
+        index.set_interval(ll, x->get_id());
     } else {
 
         // Compute minimum rank across children
-        x->lock();
-        uint min_rank = find_min_rank(children, i);
+        uint min_rank = find_min_rank(children, index);
 
 #ifdef DEBUG
 #if !PARALLEL_VISITS
@@ -120,9 +140,10 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
 #endif
 #endif
 
+        Interval ll(min(rank, min_rank), rank);
+
         // Set this node's interval
-        x->add_interval(Interval(min(rank, min_rank), rank), i);
-        x->unlock();
+        index.set_interval(ll, x->get_id());
     }
 
 #ifdef DEBUG
@@ -130,60 +151,6 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
     cout<<"[Thread "<<i<<"] Updated my node:"<<endl;
     cout<<*x<<endl<<endl;
 #endif
-#endif
-
-    ++rank;
-
-    return true;
-}
-
-bool sequential_labelling(Graph& G, const uint d) {
-    for(uint i=0; i<d; ++i) {
-        vector<Node*> roots = G.get_roots(true);
-        unordered_set<uint> visited_nodes;
-        uint rank=1u;
-        for(uint j=0; j<roots.size(); ++j){
-            sequential_visit(roots[j], i, G, rank, visited_nodes);
-        }
-    }
-
-    return true;
-}
-
-bool sequential_visit(Node* x, int i, Graph& G, uint& rank, unordered_set<uint>& visited) {
-    if (x == NULL) return false;
-    if (visited.count(x->get_id()) > 0) // Node already visited
-        return false;
-    
-    visited.insert(x->get_id()); // Add this node to already visited
-
-#ifdef DEBUG
-    cout<<"Visiting node "<<x->get_id()<<endl;
-    usleep( ( rand()%100 +1 ) *100); // Sleep from 1ms to 100ms
-#endif
-
-    // Call on children in random order
-    vector<Node*> children = G.get_children(x, true);
-    for(uint j=0; j<children.size(); ++j)
-        sequential_visit(children[j], i, G, rank, visited);
-    
-    if (children.size() == 0u) {
-        x->add_interval(Interval(rank, rank), i);
-    } else {
-        // Compute minimum rank across children
-        uint min_rank = find_min_rank(children, i);
-
-#ifdef DEBUG
-        cout<<"Min rank below me is "<<min_rank;
-        cout<<"; my rank is "<<rank<<endl;
-#endif
-
-        // Set this node's interval
-        x->add_interval(Interval(min(rank, min_rank), rank), i);
-    }
-#ifdef DEBUG
-    cout<<"Updated my node:"<<endl;
-    cout<<*x<<endl<<endl;
 #endif
 
     ++rank;

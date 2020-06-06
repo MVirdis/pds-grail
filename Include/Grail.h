@@ -3,6 +3,7 @@
 
 #include <unordered_set>
 
+#include "Index.h"
 #include "Graph.h"
 
 /*
@@ -20,12 +21,10 @@
 */
 #define PARALLEL_VISITS 0
 
-bool randomized_labelling(Graph&, const uint);
+Index* randomized_labelling(Graph&, const uint);
 
-bool randomized_visit(Node*, uint, Graph&, uint& , std::unordered_set<uint>&);
+Index* sequential_labelling(Graph& G, const uint d);
 
-bool sequential_labelling(Graph& G, const uint d);
-
-bool sequential_visit(Node* x, int i, Graph& G, uint& rank, std::unordered_set<uint>& visited);
+bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index);
 
 #endif
