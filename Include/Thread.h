@@ -18,14 +18,14 @@
 class RandomVisitor {
 	std::thread t;
 	Graph *G;
-	uint offset;
 	Node* x;
 	Barrier *barrier;
 	uint *rank;
 	std::unordered_set<uint> *visited_set;
+	Index *index;
 
 	// Change this function's signature as needed (should be static)
-	static void start_routine(Graph *G, uint offset, Barrier *barrier, uint* rank, std::unordered_set<uint> *visited_set);
+	static void start_routine(Graph *G, Barrier *barrier, uint* rank, std::unordered_set<uint> *visited_set, Index *index);
 
   public:
 	/* Constructors */
@@ -34,14 +34,10 @@ class RandomVisitor {
 	/* Methods */
 	RandomVisitor& run(void);
 	RandomVisitor& set_graph(Graph *G);
-	RandomVisitor& set_offset(uint i);
-	RandomVisitor& set_start_node(Node* x);
 	RandomVisitor& set_barrier(Barrier *barrier);
 	RandomVisitor& set_visited_set(std::unordered_set<uint> *set);
 	RandomVisitor& set_rank(uint *rank);
 	RandomVisitor& set_index(Index* index);
-
-	//~RandomVisitor();
 };
 
 

@@ -10,16 +10,6 @@ RandomVisitor& RandomVisitor::set_graph(Graph *G) {
 	return *this;
 }
 
-RandomVisitor& RandomVisitor::set_offset(uint i) {
-	this->offset = i;
-	return *this;
-}
-
-RandomVisitor& RandomVisitor::set_start_node(Node* x) {
-	this->x = x;
-	return *this;
-}
-
 RandomVisitor& RandomVisitor::set_barrier(Barrier *barrier) {
 	this->barrier = barrier;
 	return *this;
@@ -35,16 +25,21 @@ RandomVisitor& RandomVisitor::set_rank(uint *rank) {
 	return *this;
 }
 
+RandomVisitor& RandomVisitor::set_index(Index *index) {
+	this->index = index;
+	return *this;
+}
+
 RandomVisitor& RandomVisitor::run() {
-	this->t = std::thread(start_routine, G, offset, barrier, rank, visited_set);
+	this->t = std::thread(start_routine, G, barrier, rank, visited_set, index);
 	this->t.detach();
 	return *this;
 }
 
-void RandomVisitor::start_routine(Graph *G, uint offset, Barrier *barrier, uint* rank, std::unordered_set<uint> *visited_set) {
+void RandomVisitor::start_routine(Graph *G, Barrier *barrier, uint* rank, std::unordered_set<uint> *visited_set, Index *index) {
 	std::vector<Node*> roots = G->get_roots(true);
 	for (uint i = 0; i < roots.size(); ++i)
-		randomized_visit(roots[i], *G, *rank, *visited_set);
+		randomized_visit(roots[i], *G, *rank, *visited_set, *index);
 	barrier->wait();
 }
 

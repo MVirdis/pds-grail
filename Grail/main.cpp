@@ -68,6 +68,7 @@ void grail_graph(int option) {
     string name;
     ifstream graph_file;
     uint d;
+	Index *indexes;
 
     cout<<endl<<"GRAIL Sequential Test with Graph class"<<endl;
     cout<<"What is the name of the graph file? "; (cin>>name).get();
@@ -89,12 +90,12 @@ void grail_graph(int option) {
     switch (option) {
         case 2:
             begin = chrono::steady_clock::now();
-            sequential_labelling(G, d); // Builds Index
+            indexes = sequential_labelling(G, d); // Builds Index
             end = chrono::steady_clock::now();
             break;
         case 3:
             begin = chrono::steady_clock::now();
-            randomized_labelling(G, d); // Builds Index
+            indexes = randomized_labelling(G, d); // Builds Index
             end = chrono::steady_clock::now();
             break;
         default:
@@ -107,7 +108,7 @@ void grail_graph(int option) {
         Node* x = G.get_node(j);
         cout<<"Node "<<x->get_id()<<": ";
         for(uint i=0; i<d; ++i) {
-            Interval label = x->get_interval(i);
+            Interval label = indexes[i].get_interval(x->get_id());
             cout<<"["<<label.first<<", "<<label.second<<"]";
             if (i<d-1)
                 cout<<", ";
@@ -120,7 +121,7 @@ void grail_graph(int option) {
             Node* x = G.get_node(j);
             cout<<"Node "<<x->get_id()<<": ";
             for(uint i=0; i<d; ++i) {
-                Interval label = x->get_interval(i);
+                Interval label = indexes[i].get_interval(x->get_id());
                 cout<<"["<<label.first<<", "<<label.second<<"]";
                 if (i<d-1)
                     cout<<", ";

@@ -11,8 +11,8 @@ class Index {
     Index();
 
     /* Methods */
-    Interval set_interval(Interval& label, uint node_id);
-    Interval set_size(uint size);
+    Index& set_interval(Interval& label, uint node_id);
+    Index& set_size(uint size);
 
     /* Getters */
     uint get_size(void) const;
