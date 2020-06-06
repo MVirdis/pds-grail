@@ -44,7 +44,7 @@ RandomVisitor& RandomVisitor::run() {
 void RandomVisitor::start_routine(Graph *G, uint offset, Barrier *barrier, uint* rank, std::unordered_set<uint> *visited_set) {
 	std::vector<Node*> roots = G->get_roots(true);
 	for (uint i = 0; i < roots.size(); ++i)
-		randomized_visit(roots[i], offset, *G, *rank, *visited_set);
+		randomized_visit(roots[i], *G, *rank, *visited_set);
 	barrier->wait();
 }
 

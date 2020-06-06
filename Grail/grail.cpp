@@ -72,14 +72,14 @@ Index* sequential_labelling(Graph& G, const uint d) {
         unordered_set<uint> visited_nodes;
         uint rank=1u;
         for(uint j=0; j<roots.size(); ++j){
-            randomized_visit(roots[j], i, G, rank, visited_nodes, indexes[i]);
+            randomized_visit(roots[j], G, rank, visited_nodes, indexes[i]);
         }
     }
 
     return indexes;
 }
 
-bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index) {
+bool randomized_visit(Node* x, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index) {
     if (x == NULL) return false;
     if (visited.count(x->get_id()) > 0) // Node already visited
         return false;
@@ -94,7 +94,7 @@ bool randomized_visit(Node* x, uint i, Graph& G, uint& rank, unordered_set<uint>
     // Call on children in random order
     vector<Node*> children = G.get_children(x, true);
     for(uint j=0; j<children.size(); ++j)
-        randomized_visit(children[j], i, G, rank, visited, index);
+        randomized_visit(children[j], G, rank, visited, index);
     
     if (children.size() == 0u) {
         Interval ll(rank, rank);
