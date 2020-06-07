@@ -8,28 +8,37 @@
 using namespace std;
 
 QueryProcessor::QueryProcessor() {
-	// TODO init internal arrays
+	this->clear();
 }
 
 QueryProcessor::QueryProcessor(string file_path) {
-	// TODO call this->from_file
+	this->from_file(file_path);
 }
 
 QueryProcessor& QueryProcessor::from_file(string file_path) {
 	Interval interval;
 	ifstream file;
 
-	// TODO Check if queries and results are already allocated,
-	// if they are free them through clear method
-
+	if (this->queries != NULL)
+		this->clear();
+		
+	if (this->results != NULL)
+		this->clear();
+		
 	file.open(file_path);
-	if (!file.is_open()) {
-		cerr << "Errod during the open. Try with another name" << endl;
-		// TODO Handle situation where file doesn't exist, e.g. return here
-	}
 	
-	// TODO allocate internal arrays and read queries from_file filling arrays
-	// and num_queries appropriately
+	while(file >> interval.first >> interval.second)
+		this->num_queries++;
+	
+	this->queries = new Query[this->num_queries];
+	this->results = new bool[this->num_queries];
+	
+	fseek(file, 0, SEEK_SET);
+	
+	for(uint i = 0; i < this->num_queries; ++i) {
+		file >> this->queries[i].first >> this->queries[i].second;
+		this->results[i] = false;
+	}
 
 	return *this;
 }
@@ -41,7 +50,9 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d) {
 }
 
 QueryProcessor& QueryProcessor::clear(void) {
-	// TODO free resources
+	this->queries = NULL;
+	this->results = NULL;
+	this->num_queries = 0;
 }
 
 uint QueryProcessor::get_num_queries(void) const {
@@ -49,5 +60,6 @@ uint QueryProcessor::get_num_queries(void) const {
 }
 
 QueryProcessor::~QueryProcessor() {
-	// TODO call clear
+	delete[] queries;
+	delete[] results;
 }

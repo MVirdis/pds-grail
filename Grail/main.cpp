@@ -164,6 +164,7 @@ void grail_graph(int option) {
 
 void process_queries() {
 	string name;
+	ifstream file;
 
     if (G.get_num_nodes() == 0u) {
         cout<<"First load a graph and build an index!"<<endl;
@@ -177,7 +178,12 @@ void process_queries() {
     cout<<"QUERY TESTER"<<endl;
 	cout << "What is the name of the query file? ";
 	cin >> name;
-	
+
+	file.open(file_path);
+	if (!file.is_open()) {
+		cerr << "Errod during the open. Try with another name" << endl;
+		return;
+	}
     QP.from_file(name).solve(G, indexes, d);
 
     // TODO: Compute and print results compute time stats
