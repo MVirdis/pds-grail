@@ -60,7 +60,7 @@ void graph_creation() {
     cout<<"How many nodes? "; (cin>>nodes).get();
     cout<<"How many edges at max.? "; (cin>>edges).get();
     cout<<"How many queries? "; (cin>>queries).get();
-    cout<<"What's the graph's name (no spaces)? "; (cin>>name).get();
+    cout<<"What's the graph's name (no spaces, no extension)? "; cin>>name;
     
     if (nodes > 1000) cout<<"It will take a few minutes..."<<endl;
 
@@ -72,7 +72,7 @@ void graph_load(Graph& G) {
     string file_path;
     ifstream graph_file;
     cout<<"GRAPH Loader"<<endl;
-    cout<<"What is the path to the .gra file? "; (cin>>file_path).get();
+    cout<<"What is the path to the .gra file? "; cin>>file_path;
     graph_file.open(file_path);
     if (!graph_file.is_open()) {
         cerr<<"Couldn't open the file. Is the name right?"<<endl;
