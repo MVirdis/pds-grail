@@ -26,7 +26,7 @@ class Node {
 
 	/* Getters */
 	uint get_id(void) const;
-	std::vector<Node*> get_children(void) const;
+	Node** get_children(void) const;
 	uint get_num_children(void) const;
 
 	/* Methods */

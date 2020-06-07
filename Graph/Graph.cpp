@@ -121,14 +121,6 @@ vector<Node*> Graph::get_roots(bool random) const {
     return vec;
 }
 
-vector<Node*> Graph::get_children(Node* node, bool random) const {
-    vector<Node*> vec;
-    if (node == NULL) return vector<Node*>();
-    vec = node->get_children();
-    if (random) random_shuffle(vec.begin(), vec.end());
-    return vec;
-}
-
 Node* Graph::get_node(int nid) const {
     if (this->nodes.size() == 0u || this->nodes.size() <= (uint)nid) return NULL;
     return this->nodes[nid];

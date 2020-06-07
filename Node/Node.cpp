@@ -14,14 +14,10 @@ uint Node::get_id(void) const {
 	return this->id;
 }
 
-vector<Node*> Node::get_children(void) const {
-	if (this->adj_nodes == NULL)
-		return vector<Node*>();
-	
-	vector<Node*> children;
-	for (uint i = 0; i < this->neigh; ++i)
-		children.push_back(this->adj_nodes[i]);
-	return children;
+Node** Node::get_children(void) const {
+	if (this->neigh == 0)	return NULL;
+
+	return this->adj_nodes;
 }
 
 uint Node::get_num_children(void) const {

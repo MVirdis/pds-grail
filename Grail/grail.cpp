@@ -12,17 +12,17 @@
 
 using namespace std;
 
-static uint find_min_rank(vector<Node*> children, Index& index) {
+static uint find_min_rank(Node** children, uint nchildren, Index& index) {
     uint minval;
     uint val;
 
-    if (children.size() == 0) {
+    if (nchildren == 0) {
         return 0u;
     }
 
     minval = index.get_interval(children[0]->get_id()).first;
 
-    for(uint i=1; i<children.size(); ++i) {
+    for(uint i=1; i<nchildren; ++i) {
         val = index.get_interval(children[i]->get_id()).first;
         if ( val < minval) {
             minval = val;
@@ -91,17 +91,18 @@ bool randomized_visit(Node* x, Graph& G, uint& rank, unordered_set<uint>& visite
 #endif
 
     // Call on children in random order
-    vector<Node*> children = G.get_children(x, true);
-    for(uint j=0; j<children.size(); ++j)
+    Node** children = x->get_children();
+    uint nchildren = x->get_num_children();
+    for(uint j=0; j<nchildren; ++j)
         randomized_visit(children[j], G, rank, visited, index);
     
-    if (children.size() == 0u) {
+    if (nchildren == 0u) {
         Interval ll(rank, rank);
         index.set_interval(ll, x->get_id());
     } else {
 
         // Compute minimum rank across children
-        uint min_rank = find_min_rank(children, index);
+        uint min_rank = find_min_rank(children, nchildren, index);
 
 #ifdef DEBUG
         cout<<"[Thread "<<i<<"] Min rank below me is "<<min_rank;

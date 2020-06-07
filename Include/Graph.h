@@ -29,7 +29,6 @@ class Graph {
 
 	/* Getters */
 	std::vector<Node*> get_roots(bool random=true) const;
-	std::vector<Node*> get_children(Node* node, bool random) const;
 	Node* get_node(int nid) const;
 	uint get_num_nodes(void) const;
 
