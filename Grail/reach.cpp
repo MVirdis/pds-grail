@@ -20,13 +20,16 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G) {
 	
 	//for each u-child (call it c) check if Lv C Lc. If it's true call recursively reachable
 	for(int i = 1; i <= child_data[0]; ++i) {
-		for (int j = 0; j < d; ++i) {
-			if ((indexes[j].get_interval(v).first >= indexes[j].get_interval(child_data[i]).first) && 
-				(indexes[i].get_interval(v).second <= indexes[i].get_interval(child_data[i]).second)) {
-				if(reachable(child_data[i], v, indexes, d, G))
-					return true;
+		bool is_candidate = true;
+		for (int j = 0; j < d; ++j) {
+			if ((indexes[j].get_interval(v).first < indexes[j].get_interval(child_data[i]).first) ||
+				(indexes[j].get_interval(v).second > indexes[j].get_interval(child_data[i]).second)) {
+				is_candidate = false;
+				break;	
 			}
 		}
+		if(is_candidate && reachable(child_data[i], v, indexes, d, G))
+			return true;
 	}
 
 	return false;
