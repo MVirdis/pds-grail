@@ -20,6 +20,8 @@ Graph& Graph::from_file(const char* filepath) {
     uint num;
     vector<Node*> node_children;
 
+    if (nodes.size() > 0) this->clear();
+
     file.open(filepath);
     file >> num;
 
@@ -157,9 +159,9 @@ uint Graph::compute_size(uint d) const {
     uint size = 0u;
 
     // Graph dependent size
-    size += sizeof(vector<Node*>) + sizeof(Node*) * nodes.size();
-    size += sizeof(vector<Node*>) + sizeof(Node*) * roots.size();
-    size += sizeof(uint);
+    size += sizeof(nodes);
+    size += sizeof(roots);
+    size += sizeof(num_nodes);
 
     // Node dependent size
     size += (sizeof(uint) + sizeof(Node**))*nodes.size();
@@ -170,8 +172,14 @@ uint Graph::compute_size(uint d) const {
     return size;
 }
 
-Graph::~Graph() {
+void Graph::clear(void) {
     for(uint j=0; j<nodes.size(); ++j) {
         delete nodes[j];
     }
+    nodes.clear();
+    roots.clear();
+}
+
+Graph::~Graph() {
+    this->clear();
 }

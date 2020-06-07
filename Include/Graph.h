@@ -25,6 +25,7 @@ class Graph {
 	/* Methods */
 	Graph& from_file(const char* filepath);
 	uint compute_size(uint d) const;
+	void clear(void);
 
 	/* Getters */
 	std::vector<Node*> get_roots(bool random=true) const;
