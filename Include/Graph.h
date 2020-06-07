@@ -2,9 +2,6 @@
 #define _GRAPH_H_
 
 #include <iostream>
-#include <vector>
-
-#include "Node.h"
 
 /*
 *	A generic directed Graph.
@@ -14,10 +11,10 @@
 *
 */
 class Graph {
-	std::vector<Node*> nodes;
-	std::vector<Node*> roots;
+	uint** adj_list;
+	uint* roots;
 	uint num_nodes;
-
+	uint num_roots;
   public:
 	/* Constructors */
 	Graph(void);
@@ -28,9 +25,10 @@ class Graph {
 	void clear(void);
 
 	/* Getters */
-	std::vector<Node*> get_roots(bool random=true) const;
-	Node* get_node(int nid) const;
+	uint* get_roots(void) const;
 	uint get_num_nodes(void) const;
+	uint get_num_roots(void) const;
+	uint* get_children(uint x) const;
 
 	/* Operators */
 	friend std::ostream& operator <<(std::ostream& ostr, const Graph& Graph);

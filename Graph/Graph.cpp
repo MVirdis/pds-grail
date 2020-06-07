@@ -2,10 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <algorithm>
 #include <vector>
-#include <mutex>
-#include <new>
+#include <string.h>
 
 #include "Graph.h"
 
@@ -13,14 +11,15 @@ using namespace std;
 
 Graph::Graph(void) {
     this->num_nodes = 0u;
+    this->num_roots = 0u;
 }
 
 Graph& Graph::from_file(const char* filepath) {
     ifstream file;
     uint num;
-    vector<Node*> node_children;
+    vector<uint> node_children;
 
-    if (nodes.size() > 0) this->clear();
+    if (num_nodes > 0) this->clear();
 
     file.open(filepath);
     file >> num;
@@ -37,10 +36,12 @@ Graph& Graph::from_file(const char* filepath) {
     bool* is_root = new bool[num];
 
     // Allocate num empty nodes
+    adj_list = new uint*[num];
+
+    this->num_roots = this->num_nodes = num;
+
     for(uint i=0; i<num; ++i) {
-            Node* new_node = new Node(i);
             is_root[i] = true;
-            nodes.push_back(new_node);
     }
 
 #ifdef DEBUG
@@ -90,23 +91,27 @@ Graph& Graph::from_file(const char* filepath) {
 #ifdef DEBUG
             cout<<childid<<" ";
 #endif
-            node_children.push_back(nodes[childid]);
+            node_children.push_back(childid);
             is_root[childid] = false;
+            --num_roots;
         }
 #ifdef DEBUG
         cout<<endl;
 #endif
-        nodes[nodeid]->set_children(node_children);
+        adj_list[nodeid] = new uint[node_children.size()+1];
+        adj_list[nodeid][0] = node_children.size();
+        memcpy(adj_list[nodeid]+1, node_children.data(), node_children.size()*sizeof(uint) );
         node_children.clear();
     }
 
     // Save root nodes
-    for(uint i=0; i<num; ++i)
+    roots = new uint[num_roots];
+    for(uint i=0, j=0; i<num; ++i)
         if(is_root[i]) {
 #ifdef DEBUG
             cout<<"Node "<<i<<" is root"<<endl;
 #endif
-            roots.push_back(nodes[i]);
+            roots[j++] = i;
         }
 
     delete[] is_root;
@@ -114,64 +119,50 @@ Graph& Graph::from_file(const char* filepath) {
     return *this;
 }
 
-vector<Node*> Graph::get_roots(bool random) const {
-    vector<Node*> vec(this->roots);
-    if (!random) return this->roots;
-    random_shuffle(vec.begin(), vec.end());
-    return vec;
-}
-
-Node* Graph::get_node(int nid) const {
-    if (this->nodes.size() == 0u || this->nodes.size() <= (uint)nid) return NULL;
-    return this->nodes[nid];
+uint* Graph::get_roots(void) const {
+    return this->roots;
 }
 
 uint Graph::get_num_nodes(void) const {
-    return this->nodes.size();
+    return this->num_nodes;
+}
+
+uint Graph::get_num_roots(void) const {
+    return this->num_roots;
 }
 
 ostream& operator <<(ostream& ostr, const Graph& graph) {
 #ifndef DEBUG
-    ostr<<"Nodes: [ ";
-    for (uint i=0; i<graph.nodes.size()-1; ++i) {
-        ostr<<*(graph.nodes[i])<<", ";
-    }
-    ostr<<*(*graph.nodes.end())<<" ]";
-    return ostr;
+    // TODO
 #else
-    ostr<<"Nodes:"<<endl;
-    for (uint i=0; i<graph.nodes.size(); ++i) {
-        ostr<<*(graph.nodes[i])<<": ";
-    }
-    return ostr;
+    // TODO
 #endif
+    return ostr;
 }
 
 uint Graph::compute_size(void) const {
     uint size = 0u;
 
-    // Graph dependent size
-    size += sizeof(nodes);
-    size += sizeof(roots);
-    size += sizeof(num_nodes);
-
-    // Node dependent size
-    size += sizeof(Node)*nodes.size();
-    for(uint i=0; i<nodes.size(); ++i) {
-        size += sizeof(Node*)*(nodes[i]->get_num_children());
+    size += sizeof(*this) + sizeof(uint*) * this->num_nodes + sizeof(uint)* this->num_roots;
+    for(uint i=0; i<this->num_nodes; ++i) {
+        size += sizeof(uint) * this->adj_list[i][0];
     }
 
     return size;
 }
 
 void Graph::clear(void) {
-    for(uint j=0; j<nodes.size(); ++j) {
-        delete nodes[j];
+    for(uint j=0; j<num_nodes; ++j) {
+        delete[] adj_list[j];
     }
-    nodes.clear();
-    roots.clear();
+    delete[] adj_list;
+    delete[] roots;
 }
 
 Graph::~Graph() {
     this->clear();
+}
+
+uint* Graph::get_children(uint x) const {
+    return this->adj_list[x];
 }

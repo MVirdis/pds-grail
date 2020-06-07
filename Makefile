@@ -4,7 +4,6 @@ grail_test:
 	cp Grail/main.cpp build
 	cp Grail/grail.cpp build
 	cp Graph/Graph.cpp build
-	cp Node/Node.cpp build
 	cp Thread/Sync.cpp build
 	cp Thread/RandomVisitor.cpp build
 	cp Generator/dag_generator.c build

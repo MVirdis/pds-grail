@@ -116,10 +116,9 @@ void grail_graph(Graph& G, int option) {
 
     cout<<"The index will be shown:"<<endl<<flush;
     for(uint j=0; j<min(G.get_num_nodes(), 20u); ++j) {
-        Node* x = G.get_node(j);
-        cout<<"Node "<<x->get_id()<<": ";
+        cout<<"Node "<<j<<": ";
         for(uint i=0; i<d; ++i) {
-            Interval label = indexes[i].get_interval(x->get_id());
+            Interval label = indexes[i].get_interval(j);
             cout<<"["<<label.first<<", "<<label.second<<"]";
             if (i<d-1)
                 cout<<", ";
@@ -129,10 +128,9 @@ void grail_graph(Graph& G, int option) {
     if (G.get_num_nodes() > 20u) {
         cout<<"..."<<endl;
         for(uint j=G.get_num_nodes()-1u-5u; j<G.get_num_nodes(); ++j) {
-            Node* x = G.get_node(j);
-            cout<<"Node "<<x->get_id()<<": ";
+            cout<<"Node "<<j<<": ";
             for(uint i=0; i<d; ++i) {
-                Interval label = indexes[i].get_interval(x->get_id());
+                Interval label = indexes[i].get_interval(j);
                 cout<<"["<<label.first<<", "<<label.second<<"]";
                 if (i<d-1)
                     cout<<", ";
