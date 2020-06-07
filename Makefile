@@ -5,11 +5,11 @@ grail_test:
 	cp Grail/grail.cpp build
 	cp Grail/reach.cpp build
 	cp Graph/Graph.cpp build
-	cp Node/Node.cpp build
 	cp Thread/Sync.cpp build
 	cp Thread/RandomVisitor.cpp build
 	cp Generator/dag_generator.c build
 	cp Index/Index.cpp build
+	cp Query/Query.cpp build
 	g++ -Wall -pthread -g -o build/grail -std=c++11 build/*.cpp build/*.c
 	rm -rf build/*.h build/*.cpp build/*.c
 

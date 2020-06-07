@@ -13,12 +13,11 @@
 *	A handy class that lets start a thread that executes
 *	a randomized visit on graph G, starting from node x
 *	and labelling in dimension i.
-*	This class should adjust accordingly to PARALLEL_VISITS
 */
 class RandomVisitor {
 	std::thread t;
 	Graph *G;
-	Node* x;
+	uint x;
 	Barrier *barrier;
 	uint *rank;
 	std::unordered_set<uint> *visited_set;

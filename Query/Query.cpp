@@ -35,8 +35,9 @@ QueryProcessor& QueryProcessor::from_file(string file_path) {
 }
 
 QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d) {
-	for (int i = 0; i < this->num_queries; ++i)
+	for (uint i = 0; i < this->num_queries; ++i)
 		this->results[i] = reachable(queries[i].first, queries[i].second, indexes, d, G);
+	return *this;
 }
 
 QueryProcessor& QueryProcessor::clear(void) {
