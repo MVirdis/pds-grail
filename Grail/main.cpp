@@ -179,12 +179,24 @@ void process_queries() {
 	cout << "What is the name of the query file? ";
 	cin >> name;
 
-	file.open(file_path);
+	chrono::steady_clock::time_point begin, end;
+
+	file.open(name);
 	if (!file.is_open()) {
 		cerr << "Errod during the open. Try with another name" << endl;
 		return;
 	}
-    QP.from_file(name).solve(G, indexes, d);
+    QP.from_file(name);
+	begin = chrono::steady_clock::now();
+	QP.solve(G, indexes, d);
+	end = chrono::steady_clock::now();
 
-    // TODO: Compute and print results compute time stats
+
+	cout << "Queries processed in ";
+	cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
+    cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
+
+	
+
+  
 }

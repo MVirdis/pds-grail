@@ -33,7 +33,8 @@ QueryProcessor& QueryProcessor::from_file(string file_path) {
 	this->queries = new Query[this->num_queries];
 	this->results = new bool[this->num_queries];
 	
-	fseek(file, 0, SEEK_SET);
+	file.clear();
+	file.seekg(0);
 	
 	for(uint i = 0; i < this->num_queries; ++i) {
 		file >> this->queries[i].first >> this->queries[i].second;
@@ -44,8 +45,12 @@ QueryProcessor& QueryProcessor::from_file(string file_path) {
 }
 
 QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d) {
-	for (uint i = 0; i < this->num_queries; ++i)
+	for (uint i = 0; i < this->num_queries; ++i) {
 		this->results[i] = reachable(queries[i].first, queries[i].second, indexes, d, G);
+	#if DEBUG
+		cout << "Node " << queries[i].first << (this->results[i] == true ? " reach node " : " doesn't reach node ") << queries[i].second << endl;
+	#endif
+	}
 	return *this;
 }
 
@@ -53,6 +58,7 @@ QueryProcessor& QueryProcessor::clear(void) {
 	this->queries = NULL;
 	this->results = NULL;
 	this->num_queries = 0;
+	return *this;
 }
 
 uint QueryProcessor::get_num_queries(void) const {
