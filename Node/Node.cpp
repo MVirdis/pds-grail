@@ -44,5 +44,5 @@ ostream& operator <<(ostream& ostr, const Node& node) {
 }
 
 Node::~Node() {
-		delete adj_nodes;
+		delete[] adj_nodes;
 }
