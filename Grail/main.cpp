@@ -10,16 +10,18 @@
 
 #define PARAMS "Param 1: graph file;\nParam 2: integer d;\nParam 3: query file"
 #define MENU_HEADER "[GRAIL Performance Tester]\nSelect one of the following options:"
-#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Run Sequencial GRAIL with Graph, Node\n   3. Run GRAIL with Graph, Node on d threads"
+#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load Graph\n   3. Run Sequencial GRAIL with Graph, Node\n   4. Run GRAIL with Graph, Node on d threads"
 
 using namespace std;
 
 void graph_creation();
-void grail_graph(int option);
+void graph_load(Graph& G);
+void grail_graph(Graph& G, int option);
 
 int main() {
 
     int opt;
+    Graph G;
     while(1) {
         cout<<MENU_HEADER<<endl<<MENU_OPTS<<endl;
         opt = 1;
@@ -34,10 +36,13 @@ int main() {
                     graph_creation();
                     break;
                 case 2:
-                    grail_graph(2);
+                    graph_load(G);
                     break;
                 case 3:
-                    grail_graph(3);
+                    grail_graph(G, 3);
+                    break;
+                case 4:
+                    grail_graph(G, 4);
                     break;
                 default:
                     cout<<"Not Supported"<<endl;
@@ -63,37 +68,38 @@ void graph_creation() {
     cout<<endl;
 }
 
-void grail_graph(int option) {
-    Graph G;
-    string name;
+void graph_load(Graph& G) {
+    string file_path;
     ifstream graph_file;
-    uint d;
-	Index *indexes;
-
-    cout<<endl<<"GRAIL Sequential Test with Graph class"<<endl;
-    cout<<"What is the name of the graph file? "; (cin>>name).get();
-    graph_file.open(name);
+    cout<<"GRAPH Loader"<<endl;
+    cout<<"What is the path to the .gra file? "; (cin>>file_path).get();
+    graph_file.open(file_path);
     if (!graph_file.is_open()) {
         cerr<<"Couldn't open the file. Is the name right?"<<endl;
         return;
     }
     graph_file.close();
 
-    cout<<"Loading graph...";
-    G.from_file(name.data());
+    cout<<"Loading graph..."<<flush;
+    G.from_file(file_path.data());
     cout<<"  OK"<<endl;
+}
+
+void grail_graph(Graph& G, int option) {
+    uint d;
+	Index *indexes;
 
     cout<<"What is the value of d for the index? "; (cin>>d).get();
 
     chrono::steady_clock::time_point begin, end;
 
     switch (option) {
-        case 2:
+        case 3:
             begin = chrono::steady_clock::now();
             indexes = sequential_labelling(G, d); // Builds Index
             end = chrono::steady_clock::now();
             break;
-        case 3:
+        case 4:
             begin = chrono::steady_clock::now();
             indexes = randomized_labelling(G, d); // Builds Index
             end = chrono::steady_clock::now();
