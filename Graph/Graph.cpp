@@ -147,7 +147,7 @@ ostream& operator <<(ostream& ostr, const Graph& graph) {
 #endif
 }
 
-uint Graph::compute_size(uint d) const {
+uint Graph::compute_size(void) const {
     uint size = 0u;
 
     // Graph dependent size

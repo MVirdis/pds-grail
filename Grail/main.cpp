@@ -82,13 +82,18 @@ void graph_load(Graph& G) {
 
     cout<<"Loading graph..."<<flush;
     G.from_file(file_path.data());
-    cout<<"  OK"<<endl;
+    cout<<"  OK"<<endl<<flush;
+
+    uint bs = G.compute_size();
+    cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
+    cout<<(bs/(1024u*1024u))<<"MB"<<endl;
 }
 
 void grail_graph(Graph& G, int option) {
     uint d;
 	Index *indexes;
 
+    cout<<"GRAIL Tester - "<<(option == 3 ? "Sequential" : "DThreads")<<endl;
     cout<<"What is the value of d for the index? "; (cin>>d).get();
 
     chrono::steady_clock::time_point begin, end;
@@ -109,7 +114,7 @@ void grail_graph(Graph& G, int option) {
             return;
     }
 
-    cout<<"The index will be shown:"<<endl;
+    cout<<"The index will be shown:"<<endl<<flush;
     for(uint j=0; j<min(G.get_num_nodes(), 20u); ++j) {
         Node* x = G.get_node(j);
         cout<<"Node "<<x->get_id()<<": ";
@@ -139,8 +144,4 @@ void grail_graph(Graph& G, int option) {
     cout<<"Index building took ";
     cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
-
-    uint bs = G.compute_size(d);
-    cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
-    cout<<(bs/(1024u*1024u))<<"MB"<<endl;
 }

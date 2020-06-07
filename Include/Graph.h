@@ -24,7 +24,7 @@ class Graph {
 
 	/* Methods */
 	Graph& from_file(const char* filepath);
-	uint compute_size(uint d) const;
+	uint compute_size(void) const;
 	void clear(void);
 
 	/* Getters */
