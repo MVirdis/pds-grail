@@ -19,12 +19,12 @@ using namespace std;
 void graph_creation();
 void grail_graph(int option);
 void do_query();
-Index *indexes;
-uint d;
-Graph G;
 
 int main() {
 
+    Index* indexes = NULL;
+    uint d;
+    Graph G;
     int opt;
     while(1) {
         cout<<MENU_HEADER<<endl<<MENU_OPTS<<endl;
@@ -47,6 +47,7 @@ int main() {
                     break;
 				case 4:
 					do_query();
+                    break;
                 default:
                     cout<<"Not Supported"<<endl;
             }

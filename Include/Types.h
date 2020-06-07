@@ -5,5 +5,6 @@
 
 typedef unsigned int uint;
 typedef std::pair<uint, uint> Interval;
+typedef std::pair<uint, uint> Query;
 
 #endif
