@@ -1,0 +1,9 @@
+Graph 1:
+	|V| = 800000
+	|E| = 399913816
+	|Eavg| = 499.892273
+	Depth Max = 7262
+
+	d = 5
+		Sequential: 1751s 3060MB
+		D Threads: 449s 3060MB
