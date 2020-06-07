@@ -3,25 +3,29 @@
 #include <string>
 #include <sstream>
 #include <chrono>
+#include <vector>
 
 #include "Graph.h"
 #include "Grail.h"
 #include "Generator.h"
+#include "Query.h"
 
 #define PARAMS "Param 1: graph file;\nParam 2: integer d;\nParam 3: query file"
 #define MENU_HEADER "[GRAIL Performance Tester]\nSelect one of the following options:"
-#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load Graph\n   3. Run Sequencial GRAIL with Graph, Node\n   4. Run GRAIL with Graph, Node on d threads"
+#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Run Sequencial GRAIL with Graph, Node\n   3. Run GRAIL with Graph, Node on d threads\n  4. Run Reachable"
 
 using namespace std;
 
 void graph_creation();
-void graph_load(Graph& G);
-void grail_graph(Graph& G, int option);
+void grail_graph(int option);
+void do_query();
+Index *indexes;
+uint d;
+Graph G;
 
 int main() {
 
     int opt;
-    Graph G;
     while(1) {
         cout<<MENU_HEADER<<endl<<MENU_OPTS<<endl;
         opt = 1;
@@ -36,14 +40,13 @@ int main() {
                     graph_creation();
                     break;
                 case 2:
-                    graph_load(G);
+                    grail_graph(2);
                     break;
                 case 3:
-                    grail_graph(G, 3);
+                    grail_graph(3);
                     break;
-                case 4:
-                    grail_graph(G, 4);
-                    break;
+				case 4:
+					do_query();
                 default:
                     cout<<"Not Supported"<<endl;
             }
@@ -68,43 +71,34 @@ void graph_creation() {
     cout<<endl;
 }
 
-void graph_load(Graph& G) {
-    string file_path;
+void grail_graph(int option) {
+    string name;
     ifstream graph_file;
-    cout<<"GRAPH Loader"<<endl;
-    cout<<"What is the path to the .gra file? "; (cin>>file_path).get();
-    graph_file.open(file_path);
+
+    cout<<endl<<"GRAIL Sequential Test with Graph class"<<endl;
+    cout<<"What is the name of the graph file? "; (cin>>name).get();
+    graph_file.open(name);
     if (!graph_file.is_open()) {
         cerr<<"Couldn't open the file. Is the name right?"<<endl;
         return;
     }
     graph_file.close();
 
-    cout<<"Loading graph..."<<flush;
-    G.from_file(file_path.data());
-    cout<<"  OK"<<endl<<flush;
+    cout<<"Loading graph...";
+    G.from_file(name.data());
+    cout<<"  OK"<<endl;
 
-    uint bs = G.compute_size();
-    cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
-    cout<<(bs/(1024u*1024u))<<"MB"<<endl;
-}
-
-void grail_graph(Graph& G, int option) {
-    uint d;
-	Index *indexes;
-
-    cout<<"GRAIL Tester - "<<(option == 3 ? "Sequential" : "DThreads")<<endl;
     cout<<"What is the value of d for the index? "; (cin>>d).get();
 
     chrono::steady_clock::time_point begin, end;
 
     switch (option) {
-        case 3:
+        case 2:
             begin = chrono::steady_clock::now();
             indexes = sequential_labelling(G, d); // Builds Index
             end = chrono::steady_clock::now();
             break;
-        case 4:
+        case 3:
             begin = chrono::steady_clock::now();
             indexes = randomized_labelling(G, d); // Builds Index
             end = chrono::steady_clock::now();
@@ -114,7 +108,7 @@ void grail_graph(Graph& G, int option) {
             return;
     }
 
-    cout<<"The index will be shown:"<<endl<<flush;
+    cout<<"The index will be shown:"<<endl;
     for(uint j=0; j<min(G.get_num_nodes(), 20u); ++j) {
         Node* x = G.get_node(j);
         cout<<"Node "<<x->get_id()<<": ";
@@ -144,4 +138,18 @@ void grail_graph(Graph& G, int option) {
     cout<<"Index building took ";
     cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
+
+    uint bs = G.compute_size(d);
+    cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
+    cout<<(bs/(1024u*1024u))<<"MB"<<endl;
+}
+
+void do_query() {
+	std::vector<Query> queries;
+	string name;
+	
+	cout << "What is the name of the query file? ";
+	cin >> name;
+	queries = read_query(name);
+	call_reachable(indexes, queries, d, G);
 }

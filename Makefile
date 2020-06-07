@@ -3,6 +3,7 @@ grail_test:
 	cp Include/*.h build
 	cp Grail/main.cpp build
 	cp Grail/grail.cpp build
+	cp Grail/reach.cpp build
 	cp Graph/Graph.cpp build
 	cp Node/Node.cpp build
 	cp Thread/Sync.cpp build

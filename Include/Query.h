@@ -8,7 +8,6 @@ class Query {
 	bool result;
 public:
 	Query(Interval interval);
-	Query& read_query(const char *path);
 };
 
 
