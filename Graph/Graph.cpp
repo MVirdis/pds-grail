@@ -157,12 +157,12 @@ uint Graph::compute_size(uint d) const {
     uint size = 0u;
 
     // Graph dependent size
-    size += sizeof(Node*) * nodes.size();
-    size += sizeof(Node*) * roots.size();
+    size += sizeof(vector<Node*>) + sizeof(Node*) * nodes.size();
+    size += sizeof(vector<Node*>) + sizeof(Node*) * roots.size();
     size += sizeof(uint);
 
     // Node dependent size
-    size += (sizeof(uint) + sizeof(mutex) + sizeof(Interval) * d)*nodes.size();
+    size += (sizeof(uint) + sizeof(Node**))*nodes.size();
     for(uint i=0; i<nodes.size(); ++i) {
         size += sizeof(Node*)*(nodes[i]->get_children().size());
     }
