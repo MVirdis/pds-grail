@@ -15,8 +15,8 @@
 using namespace std;
 
 Graph G;
-uint d;
-Index* indexes;
+uint d = 0u;
+Index* indexes = NULL;
 QueryProcessor QP;
 
 void graph_creation();
@@ -31,6 +31,15 @@ int main() {
         cout<<MENU_HEADER<<endl<<MENU_OPTS<<endl;
         opt = 1;
         while (opt) {
+            // Print Status
+            cout<<endl<<"[STATUS]"<<endl;
+            if (G.get_num_nodes() > 0u) {
+                cout<<"Loaded Graph with "<<G.get_num_nodes()<<" nodes"<<endl;
+                if (indexes != NULL && d > 0u)
+                    cout<<"Index created with d="<<d<<endl;
+            } else
+                cout<<"Empty"<<endl;
+            // Get command
             cout<<">> "; (cin>>opt).get();
             switch(opt) {
                 case -1:
@@ -98,8 +107,10 @@ void graph_load() {
 }
 
 void grail_graph(int option) {
-    uint d;
-
+    if (G.get_num_nodes() == 0u) {
+        cout<<"Cannot build an index if you don't load a graph!!"<<endl;
+        return;
+    }
     cout<<"GRAIL Tester - "<<(option == 3 ? "Sequential" : "DThreads")<<endl;
     cout<<"What is the value of d for the index? "; (cin>>d).get();
 
@@ -153,11 +164,21 @@ void grail_graph(int option) {
 
 void process_queries() {
 	string name;
+
+    if (G.get_num_nodes() == 0u) {
+        cout<<"First load a graph and build an index!"<<endl;
+        return;
+    }
+    if (indexes == NULL && d == 0u) {
+        cout<<"First build an index!!"<<endl;
+        return;
+    }
 	
+    cout<<"QUERY TESTER"<<endl;
 	cout << "What is the name of the query file? ";
 	cin >> name;
 	
     QP.from_file(name).solve(G, indexes, d);
 
-    // TODO: Print results compute time stats
+    // TODO: Compute and print results compute time stats
 }
