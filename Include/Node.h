@@ -17,7 +17,7 @@
 class Node {
 	uint id;						// Node number
 	Node** adj_nodes;				// Reachable nodes
-	int neigh;
+	uint neigh;
 	Node(const Node& node);			// Copy constructor blocked
 
   public:
@@ -27,6 +27,7 @@ class Node {
 	/* Getters */
 	uint get_id(void) const;
 	std::vector<Node*> get_children(void) const;
+	uint get_num_children(void) const;
 
 	/* Methods */
 	Node& set_children(std::vector<Node*>& children);

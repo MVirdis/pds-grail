@@ -19,15 +19,19 @@ vector<Node*> Node::get_children(void) const {
 		return vector<Node*>();
 	
 	vector<Node*> children;
-	for (int i = 0; i < this->neigh; ++i)
+	for (uint i = 0; i < this->neigh; ++i)
 		children.push_back(this->adj_nodes[i]);
 	return children;
+}
+
+uint Node::get_num_children(void) const {
+	return neigh;
 }
 
 Node& Node::set_children(vector<Node*>& children) {
 	this->neigh = children.size();
 	this->adj_nodes = new Node*[neigh];
-	for (int i = 0; i < this->neigh; ++i) 
+	for (uint i = 0; i < this->neigh; ++i) 
 		this->adj_nodes[i] = children[i];
 	return *this;
 }

@@ -164,9 +164,9 @@ uint Graph::compute_size(uint d) const {
     size += sizeof(num_nodes);
 
     // Node dependent size
-    size += (sizeof(uint) + sizeof(Node**))*nodes.size();
+    size += sizeof(Node)*nodes.size();
     for(uint i=0; i<nodes.size(); ++i) {
-        size += sizeof(Node*)*(nodes[i]->get_children().size());
+        size += sizeof(Node*)*(nodes[i]->get_num_children());
     }
 
     return size;
