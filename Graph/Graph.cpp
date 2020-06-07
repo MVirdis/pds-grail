@@ -12,6 +12,8 @@ using namespace std;
 Graph::Graph(void) {
     this->num_nodes = 0u;
     this->num_roots = 0u;
+    this->adj_list = NULL;
+    this->roots = NULL;
 }
 
 Graph& Graph::from_file(const char* filepath) {
@@ -33,12 +35,26 @@ Graph& Graph::from_file(const char* filepath) {
 #endif
 
     // Allocate flags for root nodes
-    bool* is_root = new bool[num];
+    bool* is_root;
+    try {
+        is_root = new bool[num];
+    } catch(const bad_alloc& e) {
+        cerr<<"Error allocating is_root array"<<endl<<flush;
+        this->num_nodes = this->num_roots = 0u;
+        return *this;
+    }
 
     // Allocate num empty nodes
-    adj_list = new uint*[num];
+    try {
+        adj_list = new uint*[num];
+    } catch(const bad_alloc& e) {
+        cerr<<"Error allocating adj_list array"<<endl<<flush;
+        this->num_nodes = this->num_roots = 0u;
+        return *this;
+    }
 
-    this->num_roots = this->num_nodes = num;
+    this->num_roots = num;
+    this->num_nodes = num;
 
     for(uint i=0; i<num; ++i) {
             is_root[i] = true;
@@ -93,26 +109,46 @@ Graph& Graph::from_file(const char* filepath) {
 #endif
             node_children.push_back(childid);
             is_root[childid] = false;
-            --num_roots;
         }
 #ifdef DEBUG
         cout<<endl;
 #endif
-        adj_list[nodeid] = new uint[node_children.size()+1];
+        try {
+            adj_list[nodeid] = new uint[node_children.size()+1];
+        } catch(const bad_alloc& e) {
+            cerr<<"Error allocating adj_list["<<nodeid<<"] array"<<endl<<flush;
+            this->num_nodes = this->num_roots = 0u;
+            return *this;
+        }
+
         adj_list[nodeid][0] = node_children.size();
         memcpy(adj_list[nodeid]+1, node_children.data(), node_children.size()*sizeof(uint) );
         node_children.clear();
     }
 
     // Save root nodes
-    roots = new uint[num_roots];
-    for(uint i=0, j=0; i<num; ++i)
+    uint j=0;
+    for(uint i=0; i<num; ++i) {
         if(is_root[i]) {
 #ifdef DEBUG
             cout<<"Node "<<i<<" is root"<<endl;
 #endif
-            roots[j++] = i;
+            ++j;
         }
+    }
+    try {
+        roots = new uint[j];
+        this->num_roots = j;
+    } catch(const bad_alloc& e) {
+        cerr<<"Error allocating roots array of size "<<num_roots*sizeof(uint)/(1024u*1024u)<<"MB"<<endl<<flush;
+        this->num_nodes = this->num_roots = 0u;
+        return *this;
+    }
+    for(uint i=0u, j=0u; i<num; ++i) {
+        if(is_root[i]) {
+            this->roots[j++] = i;
+        }
+    }
 
     delete[] is_root;
     file.close();
@@ -153,10 +189,21 @@ uint Graph::compute_size(void) const {
 
 void Graph::clear(void) {
     for(uint j=0; j<num_nodes; ++j) {
-        delete[] adj_list[j];
+        if (adj_list[j]) {
+            delete[] adj_list[j];
+            adj_list[j] = NULL;
+        }
     }
-    delete[] adj_list;
-    delete[] roots;
+    if(adj_list) {
+        delete[] adj_list;
+        adj_list = NULL;
+    }
+    if(roots) {
+        delete[] roots;
+        roots = NULL;
+    }
+    this->num_nodes = 0u;
+    this->num_roots = 0u;
 }
 
 Graph::~Graph() {
