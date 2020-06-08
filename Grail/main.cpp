@@ -203,10 +203,11 @@ void process_queries(int menu) {
   
 	if(menu == 1) {
 		char c;
-insert:	cout << "Do you want to execute Process Queries Sequential to perform precision test? (y/n) >> ";
-		cin >> c;
-		if (c != 'y' && c != 'n')
-			goto insert;
+        do {
+            cout << "Do you want to execute Process Queries Sequential to perform precision test? (y/n) >> ";
+		    cin >> c;
+        } while (c != 'y' && c != 'n');
+
 		if (c == 'y')
 			QP.precision_test(G, indexes, d);
 	}
