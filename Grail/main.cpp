@@ -80,7 +80,7 @@ void graph_creation() {
     cout<<"How many nodes? "; (cin>>nodes).get();
     cout<<"How many edges at max.? "; (cin>>edges).get();
     cout<<"How many queries? "; (cin>>queries).get();
-    cout<<"What's the graph's name (no spaces, no extension)? "; cin>>name;
+    cout<<"What's the graph's name (no spaces, no extension)? "; (cin>>name).get();
     
     if (nodes > 1000) cout<<"It will take a few minutes..."<<endl;
 
@@ -107,6 +107,12 @@ void graph_load() {
     uint bs = G.compute_size();
     cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
     cout<<(bs/(1024u*1024u))<<"MB"<<endl;
+
+    // Remove previous index
+    if(indexes) {
+        delete[] indexes;
+        indexes = NULL;
+    }
 }
 
 void grail_graph(int option) {
