@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <thread>
+#include <string.h>
 
 #include "Query.h"
 #include "Grail.h"
@@ -9,7 +10,9 @@
 using namespace std;
 
 QueryProcessor::QueryProcessor() {
-	this->clear();
+	this->queries = NULL;
+	this->results = NULL;
+	this->num_queries = 0;
 }
 
 QueryProcessor::QueryProcessor(string file_path) {
@@ -20,10 +23,7 @@ QueryProcessor& QueryProcessor::from_file(string file_path) {
 	Interval interval;
 	ifstream file;
 
-	if (this->queries != NULL)
-		this->clear();
-		
-	if (this->results != NULL)
+	if (this->queries != NULL || this->results != NULL)
 		this->clear();
 		
 	file.open(file_path);
@@ -76,6 +76,8 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 }
 
 QueryProcessor& QueryProcessor::clear(void) {
+	delete[] queries;
+	delete[] results;
 	this->queries = NULL;
 	this->results = NULL;
 	this->num_queries = 0;
@@ -84,6 +86,21 @@ QueryProcessor& QueryProcessor::clear(void) {
 
 uint QueryProcessor::get_num_queries(void) const {
 	return this->num_queries;
+}
+
+QueryProcessor& QueryProcessor::precision_test(Graph& G, Index *indexes, uint d) {
+	int count = 0;
+	bool *parallel_results = new bool[this->num_queries];
+	memcpy(parallel_results, this->results, sizeof(bool)*this->num_queries);
+	this->solve(G, indexes, d, 0);
+	for (uint i = 0; i < this->num_queries; ++i) {
+		if (parallel_results[i] == this->results[i])
+			count++;
+	}
+	
+	cout << "Precision: " << (count/this->num_queries)*100 << "%" << endl;
+	
+	return *this;
 }
 
 QueryProcessor::~QueryProcessor() {

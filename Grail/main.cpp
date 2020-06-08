@@ -118,6 +118,9 @@ void grail_graph(int option) {
     cout<<"What is the value of d for the index? "; (cin>>d).get();
 
     chrono::steady_clock::time_point begin, end;
+	
+	if (indexes != NULL)
+		delete[] indexes;
 
     switch (option) {
         case 3:
@@ -194,6 +197,10 @@ void process_queries(int menu) {
 	QP.solve(G, indexes, d, menu);
 	end = chrono::steady_clock::now();
 
+	cout << "Queries processed in ";
+	cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
+    cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl<<flush;
+  
 	if(menu == 1) {
 		char c;
 insert:	cout << "Do you want to execute Process Queries Sequential to perform precision test? (y/n) >> ";
@@ -201,11 +208,6 @@ insert:	cout << "Do you want to execute Process Queries Sequential to perform pr
 		if (c != 'y' && c != 'n')
 			goto insert;
 		if (c == 'y')
-			QP.precision_test();
+			QP.precision_test(G, indexes, d);
 	}
-
-	cout << "Queries processed in ";
-	cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
-    cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
-  
 }
