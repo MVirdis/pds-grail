@@ -34,3 +34,7 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G) {
 
 	return false;
 }
+
+void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G, bool& result) {
+	result = reachable(u, v, indexes, d, G);
+}

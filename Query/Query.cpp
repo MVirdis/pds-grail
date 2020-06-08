@@ -1,6 +1,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <thread>
 
 #include "Query.h"
 #include "Grail.h"
@@ -44,13 +45,33 @@ QueryProcessor& QueryProcessor::from_file(string file_path) {
 	return *this;
 }
 
-QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d) {
-	for (uint i = 0; i < this->num_queries; ++i) {
-		this->results[i] = reachable(queries[i].first, queries[i].second, indexes, d, G);
-	#if DEBUG
-		cout << "Node " << queries[i].first << (this->results[i] == true ? " reach node " : " doesn't reach node ") << queries[i].second << endl;
-	#endif
+QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu) {
+	switch(menu) {
+	
+	case 0:
+	
+		for (uint i = 0; i < this->num_queries; ++i) {
+			this->results[i] = reachable(queries[i].first, queries[i].second, indexes, d, G);
+		#if DEBUG
+			cout << "Node " << queries[i].first << (this->results[i] == true ? " reach node " : " doesn't reach node ") << queries[i].second << endl;
+		#endif
+		}
+		break;
+		
+	case 1:
+		
+		for (uint i = 0; i <  this->num_queries; ++i) {
+			thread t (reachable_parallel, queries[i].first, queries[i].second, indexes, d, ref(G), ref(results[i]));
+			t.detach();
+		}
+		break;
+		
+	default:
+	
+		cerr << "menu value not supported\n" << endl;
+		return *this;
 	}
+	
 	return *this;
 }
 

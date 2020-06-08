@@ -15,4 +15,6 @@ bool randomized_visit(uint x, Graph& G, uint& rank, std::unordered_set<uint>& vi
 
 bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G);
 
+void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G, bool& result);
+
 #endif

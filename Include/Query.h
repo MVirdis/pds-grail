@@ -18,8 +18,9 @@ public:
 
 	/* Methods */
 	QueryProcessor& from_file(std::string file_path);
-	QueryProcessor& solve(Graph& G, Index* indexes, uint d);
+	QueryProcessor& solve(Graph& G, Index* indexes, uint d, int menu);
 	QueryProcessor& clear(void);
+	QueryProcessor& precision_test(void);
 
 	/* Getters */
 	uint get_num_queries(void) const;

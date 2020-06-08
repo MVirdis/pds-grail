@@ -10,7 +10,7 @@
 
 #define PARAMS "Param 1: graph file;\nParam 2: integer d;\nParam 3: query file"
 #define MENU_HEADER "[GRAIL Performance Tester]\nSelect one of the following options:"
-#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load Graph\n   3. Run Sequencial GRAIL with Graph, Node\n   4. Run GRAIL with Graph, Node on d threads\n   5. Process Queries"
+#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load Graph\n   3. Run Sequencial GRAIL with Graph, Node\n   4. Run GRAIL with Graph, Node on d threads\n   5. Process Queries Sequential\n   6.Process Queries Parallel"
 
 using namespace std;
 
@@ -22,7 +22,7 @@ QueryProcessor QP;
 void graph_creation();
 void graph_load();
 void grail_graph(int option);
-void process_queries();
+void process_queries(int menu);
 
 int main() {
 
@@ -59,8 +59,11 @@ int main() {
                     grail_graph(4);
                     break;
                 case 5:
-                    process_queries();
+                    process_queries(0);
                     break;
+				case 6:
+					process_queries(1);
+					break;
                 default:
                     cout<<"Not Supported"<<endl;
             }
@@ -162,7 +165,7 @@ void grail_graph(int option) {
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
 }
 
-void process_queries() {
+void process_queries(int menu) {
 	string name;
 	ifstream file;
 
@@ -175,7 +178,7 @@ void process_queries() {
         return;
     }
 	
-    cout<<"QUERY TESTER"<<endl;
+    cout<<"QUERY " << (menu == 0 ? "SEQUENTIAL " : "PARALLEL ") << "TESTER"<<endl;
 	cout << "What is the name of the query file? ";
 	cin >> name;
 
@@ -188,15 +191,21 @@ void process_queries() {
 	}
     QP.from_file(name);
 	begin = chrono::steady_clock::now();
-	QP.solve(G, indexes, d);
+	QP.solve(G, indexes, d, menu);
 	end = chrono::steady_clock::now();
 
+	if(menu == 1) {
+		char c;
+insert:	cout << "Do you want to execute Process Queries Sequential to perform precision test? (y/n) >> ";
+		cin >> c;
+		if (c != 'y' && c != 'n')
+			goto insert;
+		if (c == 'y')
+			QP.precision_test();
+	}
 
 	cout << "Queries processed in ";
 	cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
-
-	
-
   
 }
