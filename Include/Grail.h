@@ -17,4 +17,6 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G);
 
 void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G, bool& result);
 
+float index_diversity(Index* indexes, uint d);
+
 #endif

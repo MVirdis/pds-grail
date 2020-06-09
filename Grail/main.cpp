@@ -172,6 +172,9 @@ void grail_graph(int option) {
     cout<<"Index building took ";
     cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
+
+    cout<<"Index takes "<<2*d*sizeof(uint)*G.get_num_nodes()/(1024u*1024u)<<"MB"<<endl;
+    cout<<"Index diversity: "<<(int)(index_diversity(indexes, d)*100)<<"%"<<endl;
 }
 
 void process_queries(int menu) {
