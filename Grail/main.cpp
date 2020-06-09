@@ -92,7 +92,7 @@ void graph_load() {
     string file_path;
     ifstream graph_file;
     cout<<"GRAPH Loader"<<endl;
-    cout<<"What is the path to the .gra file? "; cin>>file_path;
+    cout<<"What is the path to the .gra file? "; (cin>>file_path).get();
     graph_file.open(file_path);
     if (!graph_file.is_open()) {
         cerr<<"Couldn't open the file. Is the name right?"<<endl;
@@ -174,7 +174,8 @@ void grail_graph(int option) {
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
 
     cout<<"Index takes "<<2*d*sizeof(uint)*G.get_num_nodes()/(1024u*1024u)<<"MB"<<endl;
-    cout<<"Index diversity: "<<(int)(index_diversity(indexes, d)*100)<<"%"<<endl;
+    cout<<"Analyzing index..."<<flush;
+    cout<<"\rIndex diversity: "<<(int)(index_diversity(indexes, d)*100)<<"%"<<endl;
 }
 
 void process_queries(int menu) {
@@ -192,13 +193,13 @@ void process_queries(int menu) {
 	
     cout<<"QUERY " << (menu == 0 ? "SEQUENTIAL " : "PARALLEL ") << "TESTER"<<endl;
 	cout << "What is the name of the query file? ";
-	cin >> name;
+	(cin >> name).get();
 
 	chrono::steady_clock::time_point begin, end;
 
 	file.open(name);
 	if (!file.is_open()) {
-		cerr << "Errod during the open. Try with another name" << endl;
+		cerr << "Error during the open. Try with another name" << endl;
 		return;
 	}
     QP.from_file(name);
