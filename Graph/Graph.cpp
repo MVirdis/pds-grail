@@ -122,7 +122,8 @@ Graph& Graph::from_file(const char* filepath) {
         }
 
         adj_list[nodeid][0] = node_children.size();
-        memcpy(adj_list[nodeid]+1, node_children.data(), node_children.size()*sizeof(uint) );
+        if (node_children.size())
+            memcpy(adj_list[nodeid]+1, node_children.data(), node_children.size()*sizeof(uint) );
         node_children.clear();
     }
 
