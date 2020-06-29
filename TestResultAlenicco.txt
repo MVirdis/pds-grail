@@ -1,0 +1,8 @@
+numNodes = 1M
+numMaxEdges = 10
+d = 6
+numQueries 100K
+
+QuerySequential 42s
+QueryParallel 12s
+PrecisionTest 100%

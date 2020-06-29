@@ -45,10 +45,12 @@ QueryProcessor& QueryProcessor::from_file(string file_path) {
 	return *this;
 }
 
+
+
 QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu) {
 	switch(menu) {
 	
-	case 0:
+	case 0: {
 	
 		for (uint i = 0; i < this->num_queries; ++i) {
 			this->results[i] = reachable(queries[i].first, queries[i].second, indexes, d, G);
@@ -57,19 +59,34 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 		#endif
 		}
 		break;
+	}
 		
-	case 1:
+	case 1: {
 		
-		for (uint i = 0; i <  this->num_queries; ++i) {
-			thread t (reachable_parallel, queries[i].first, queries[i].second, indexes, d, ref(G), ref(results[i]));
+		Barrier barrier(HOW_MANY_BUFF+1);
+		int offset = (this -> num_queries)/HOW_MANY_BUFF;
+		
+		for (uint i = 0; i < HOW_MANY_BUFF; ++i) {
+			thread t (pre_process, offset, i, queries, results, ((i == (HOW_MANY_BUFF-1))? true:false), ref(G), indexes, d, this->num_queries, ref(barrier));
 			t.detach();
 		}
-		break;
 		
-	default:
+		barrier.wait();
+
+		/*for (uint i = 0; i <  this->num_queries; ++i) {
+			thread t (reachable_parallel, queries[i].first, queries[i].second, indexes, d, ref(G), ref(results[i]));
+			t.detach();
+		}*/
+
+		
+		break;
+	}
+		
+	default: {
 	
 		cerr << "menu value not supported\n" << endl;
 		return *this;
+	}
 	}
 	
 	return *this;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 
 #include "Types.h"
 #include "Grail.h"
@@ -37,4 +38,35 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G) {
 
 void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G, bool& result) {
 	result = reachable(u, v, indexes, d, G);
+#if DEBUG
+	cout << u << ((result == true)? "reach" : "does not reach") << v << endl;
+#endif
 }
+
+void pre_process(int offset, uint i, Query *queries, bool *results, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr) {
+	if (!last) {
+		for (uint j = (offset*i); j < ((offset)*(i+1)); ++j) {
+			thread t (reachable_parallel, queries[j].first, queries[j].second, indexes, d, ref(G), ref(results[j]));
+			t.join();
+		}
+	}
+
+	if (last) {
+		int last_offset = num_queries%HOW_MANY_BUFF;
+		for (uint j = (offset*i); j < (((offset)*(i+1))+last_offset); ++j) {
+			thread t (reachable_parallel, queries[j].first, queries[j].second, indexes, d, ref(G), ref(results[j]));
+			t.join();
+		}
+	}
+	
+	barr.wait();
+	
+}
+
+
+
+
+
+
+
+
