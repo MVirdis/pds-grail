@@ -43,7 +43,8 @@ void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G, bool& 
 #endif
 }
 
-void pre_process(int offset, uint i, Query *queries, bool *results, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr) {
+void pre_process(int offset, uint i, std::vector<Query> queries, bool *results, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr) {
+
 	if (!last) {
 		for (uint j = (offset*i); j < ((offset)*(i+1)); ++j) {
 			thread t (reachable_parallel, queries[j].first, queries[j].second, indexes, d, ref(G), ref(results[j]));

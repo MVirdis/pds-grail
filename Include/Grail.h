@@ -7,7 +7,7 @@
 #include "Index.h"
 #include "Graph.h"
 #include "Query.h"
-#define HOW_MANY_BUFF 8
+#define HOW_MANY_BUFF 150
 
 Index* randomized_labelling(Graph&, const uint);
 
@@ -19,7 +19,7 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G);
 
 void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G, bool& result);
 
-void pre_process(int offset, uint i, Query *queries, bool *results, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr);
+void pre_process(int offset, uint i, std::vector<Query> queries, bool *results, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr);
 
 float index_diversity(Index* indexes, uint d);
 
