@@ -8,11 +8,6 @@
 
 using namespace std;
 
-uint d;
-Graph G;
-QueryProcessor QP;
-Index* indexes;
-
 int main(int argc, char** argv) {
 
     if (argc != 4) {
@@ -20,6 +15,11 @@ int main(int argc, char** argv) {
         cout<<"grail graph.gra d queries.que"<<endl;
         return -1;
     }
+
+    uint d;
+    Graph G;
+    QueryProcessor QP;
+    Index* indexes;
     
 #ifdef VERBOSE
     cout<<"Building graph..."<<endl<<flush;

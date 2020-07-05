@@ -56,9 +56,9 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 			cout << "Node " << queries[i].first << (this->results[i] == true ? " reach node " : " doesn't reach node ") << queries[i].second << endl;
 		#endif
 
-			cout<<queries[i].first<<"  "<<queries[i].second<<":    ";
-			if(this->results[i]) cout<<"REACHABLE"<<endl;
-			else cout<<"NOT REACHABLE"<<endl;
+			//cout<<queries[i].first<<"  "<<queries[i].second<<":    ";
+			//if(this->results[i]) cout<<"REACHABLE"<<endl;
+			//else cout<<"NOT REACHABLE"<<endl;
 		}
 		break;
 		
