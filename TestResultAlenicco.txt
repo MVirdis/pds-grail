@@ -1,0 +1,23 @@
+numNodes = 1M
+numMaxEdges = 10
+d = 6
+numQueries 100K
+
+QuerySequential 42s
+QueryParallel(8 buffer) 12s
+PrecisionTest 100%
+
+numNodes = 1M
+numMaxEdges = 10
+d = 6
+numQueries 100K
+
+QuerySequential 45s
+QueryParallel(20 buffer) 13s
+QueryParallel(50 buffer) 11s
+QueryParallel(100 buffer) 11s
+QueryParallel(150 buffer) 10s
+QueryParallel(500 buffer) 13s
+QueryParallel(250 buffer) 12s
+QueryParallel(200 buffer) 13s
+PrecisionTest 100%

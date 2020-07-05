@@ -202,7 +202,7 @@ void process_queries(int menu) {
 		cerr << "Error during the open. Try with another name" << endl;
 		return;
 	}
-    QP.from_file(name);
+    QP.from_file(name, indexes, d);
 	begin = chrono::steady_clock::now();
 	QP.solve(G, indexes, d, menu);
 	end = chrono::steady_clock::now();
