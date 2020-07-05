@@ -15,17 +15,13 @@ QueryProcessor::QueryProcessor() {
 	this->after_select = 0;
 }
 
-QueryProcessor& QueryProcessor::select_queries(uint u, uint v, Index *indexes, uint d, bool& res) {
+bool QueryProcessor::select_queries(uint u, uint v, Index *indexes, uint d) {
 	for(uint i = 0; i < d; ++i) {
 		if ((indexes[i].get_interval(v).first < indexes[i].get_interval(u).first) || (indexes[i].get_interval(v).second > indexes[i].get_interval(u).second)) {
-			res = false;
-			return *this;
+			return false;
 		}
-		
-		else 
-			res = true;
 	}
-	return *this;
+	return true;
 }
 
 QueryProcessor& QueryProcessor::from_file(string file_path, Index *indexes, uint d) {
@@ -37,24 +33,24 @@ QueryProcessor& QueryProcessor::from_file(string file_path, Index *indexes, uint
 		
 	file.open(file_path);
 	
-	while(file >> interval.first >> interval.second)
-		this->num_queries++;
-	
-	file.clear();
-	file.seekg(0);
-	
-	for(uint i = 0; i < this->num_queries; ++i) {
+	while(file >> interval.first >> interval.second) {
 		bool res;
 		Query q;
 		file >> q.first >> q.second;
-		this -> select_queries(q.first, q.second, indexes, d, res);
+		this->num_queries++;
+		res = this -> select_queries(q.first, q.second, indexes, d);
 		if (res) {
 			this->queries.push_back(q);
 			++after_select;
+		} else {
+			cout<<q.first<<"  "<<q.second<<":    ";
+			cout<<"NOT REACHABLE"<<endl;
 		}
 	}
 
-	this->results = new bool[this->after_select];
+	file.close();
+
+	//this->results = new bool[this->after_select]; // TODO Remove results safely
 	double percentage = (double)(100*((double)after_select/(double)num_queries));
 	cout << "after the selection we have " << percentage << "% " << "of queries" << endl;
 
@@ -69,14 +65,14 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 	case 0: {
 	
 		for (uint i = 0; i < this->after_select; ++i) {
-			this->results[i] = reachable(queries[i].first, queries[i].second, indexes, d, G);
+			bool result = reachable(queries[i].first, queries[i].second, indexes, d, G);
 		#if DEBUG
 			cout << "Node " << queries[i].first << (this->results[i] == true ? " reach node " : " doesn't reach node ") << queries[i].second << endl;
 		#endif
 
-			//cout<<queries[i].first<<"  "<<queries[i].second<<":    ";
-			//if(this->results[i]) cout<<"REACHABLE"<<endl;
-			//else cout<<"NOT REACHABLE"<<endl;
+			cout<<queries[i].first<<"  "<<queries[i].second<<":    ";
+			if(result) cout<<"REACHABLE"<<endl;
+			else cout<<"NOT REACHABLE"<<endl;
 		}
 		break;
 	}
@@ -87,7 +83,7 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 		int offset = (this -> after_select)/HOW_MANY_BUFF;
 		
 		for (uint i = 0; i < HOW_MANY_BUFF; ++i) {
-			thread t (pre_process, offset, i, queries, results, ((i == (HOW_MANY_BUFF-1))? true:false), ref(G), indexes, d, this->after_select, ref(barrier));
+			thread t (pre_process, offset, i, queries, ((i == (HOW_MANY_BUFF-1))? true:false), ref(G), indexes, d, this->after_select, ref(barrier));
 			t.detach();
 		}
 		
@@ -108,7 +104,7 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 
 QueryProcessor& QueryProcessor::clear(void) {
 	queries.clear();
-	delete[] results;
+	if (results) delete[] results;
 	this->results = NULL;
 	this->num_queries = 0;
 	this->after_select = 0;

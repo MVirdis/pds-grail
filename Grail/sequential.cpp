@@ -29,7 +29,6 @@ int main(int argc, char** argv) {
     cout<<"Processing query file..."<<endl<<flush;
 #endif
     d = stoi(string(argv[2]));
-    QP.from_file(argv[3]);
 #ifdef VERBOSE
     cout<<"Building indexes..."<<endl<<flush;
 #endif
@@ -37,6 +36,7 @@ int main(int argc, char** argv) {
 #ifdef VERBOSE
     cout<<"Solving queries..."<<endl<<flush;
 #endif
+    QP.from_file(argv[3], indexes, d);
     QP.solve(G, indexes,d,0);
 
     return 0;

@@ -13,13 +13,14 @@ class QueryProcessor {
 	bool* results;
 	uint num_queries;
 	uint after_select;
+
+	bool select_queries(uint u, uint v, Index *indexes, uint d);
 public:
 	/* Constructors */
 	QueryProcessor(void);
 
 	/* Methods */
 	QueryProcessor& from_file(std::string file_path, Index *indexes, uint d);
-	QueryProcessor&	select_queries(uint u, uint v, Index *indexes, uint d, bool& res);
 	QueryProcessor& solve(Graph& G, Index* indexes, uint d, int menu);
 	QueryProcessor& clear(void);
 	QueryProcessor& precision_test(Graph& G, Index *indexes, uint d);
