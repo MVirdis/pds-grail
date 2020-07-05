@@ -7,7 +7,7 @@
 #include "Index.h"
 #include "Graph.h"
 #include "Query.h"
-#define HOW_MANY_BUFF 150
+#define HOW_MANY_BUFF 10
 
 Index* randomized_labelling(Graph&, const uint);
 
@@ -17,7 +17,7 @@ bool randomized_visit(uint x, Graph& G, uint& rank, std::unordered_set<uint>& vi
 
 bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G, bool needs_check=true);
 
-void pre_process(int offset, uint i, std::vector<Query> queries,  bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr);
+void pre_process(int offset, uint i, std::vector<Query> queries,  bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr, std::mutex* m);
 
 float index_diversity(Index* indexes, uint d);
 

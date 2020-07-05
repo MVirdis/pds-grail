@@ -202,23 +202,12 @@ void process_queries(int menu) {
 		cerr << "Error during the open. Try with another name" << endl;
 		return;
 	}
-    QP.from_file(name, indexes, d);
 	begin = chrono::steady_clock::now();
+    QP.from_file(name, indexes, d, (menu==1));
 	QP.solve(G, indexes, d, menu);
 	end = chrono::steady_clock::now();
 
 	cout << "Queries processed in ";
 	cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl<<flush;
-  
-	if(menu == 1) {
-		char c;
-        do {
-            cout << "Do you want to execute Process Queries Sequential to perform precision test? (y/n) >> ";
-		    cin >> c;
-        } while (c != 'y' && c != 'n');
-
-		if (c == 'y')
-			QP.precision_test(G, indexes, d);
-	}
 }

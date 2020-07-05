@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <mutex>
 
 #include "Types.h"
 #include "Grail.h"
@@ -29,43 +30,27 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G, bool needs_chec
 				break;
 			}
 		}
-		if(is_candidate && reachable(child_data[i], v, indexes, d, G, false))
+		if(is_candidate && reachable(child_data[i], v, indexes, d, G, needs_check))
 			return true;
 	}
 
 	return false;
 }
 
-void reachable_parallel(uint u, uint v, Index *indexes, uint d, Graph& G) {
-	bool result = reachable(u, v, indexes, d, G, false);
-	cout<<u<<"  "<<v<<":    ";
-	if(result) cout<<"REACHABLE"<<endl;
-	else cout<<"NOT REACHABLE"<<endl;
-}
+void pre_process(int offset, uint i, std::vector<Query> queries, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr, mutex* m) {
 
-void pre_process(int offset, uint i, std::vector<Query> queries, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr) {
-
-	if (!last) {
-		for (uint j = (offset*i); j < ((offset)*(i+1)); ++j) {
-			thread t (reachable_parallel, queries[j].first, queries[j].second, indexes, d, ref(G));
-			t.join();
-		}
-	} else {
-		int last_offset = num_queries%HOW_MANY_BUFF;
-		for (uint j = (offset*i); j < (((offset)*(i+1))+last_offset); ++j) {
-			thread t (reachable_parallel, queries[j].first, queries[j].second, indexes, d, ref(G));
-			t.join();
-		}
+	uint tot = (offset)*(i+1) + (last ? (num_queries%HOW_MANY_BUFF) : 0 );
+	for (uint j = (offset*i); j < tot; ++j) {
+		uint u=queries[j].first;
+		uint v =queries[j].second;
+		bool result = reachable(u, v, indexes, d, G, false);
+		unique_lock<mutex> lock(*m);
+		cout<<u<<"  "<<v<<":    ";
+		if(result) cout<<"REACHABLE"<<endl;
+		else cout<<"NOT REACHABLE"<<endl;
+		lock.unlock();
 	}
 	
 	barr.wait();
 	
 }
-
-
-
-
-
-
-
-

@@ -20,7 +20,7 @@ public:
 	QueryProcessor(void);
 
 	/* Methods */
-	QueryProcessor& from_file(std::string file_path, Index *indexes, uint d);
+	QueryProcessor& from_file(std::string file_path, Index *indexes, uint d, bool parallel=false);
 	QueryProcessor& solve(Graph& G, Index* indexes, uint d, int menu);
 	QueryProcessor& clear(void);
 	QueryProcessor& precision_test(Graph& G, Index *indexes, uint d);

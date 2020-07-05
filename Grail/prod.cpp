@@ -25,18 +25,18 @@ int main(int argc, char** argv) {
     cout<<"Building graph..."<<endl<<flush;
 #endif
     G.from_file(argv[1]);
-#ifdef VERBOSE
-    cout<<"Processing query file..."<<endl<<flush;
-#endif
     d = stoi(string(argv[2]));
 #ifdef VERBOSE
     cout<<"Building indexes..."<<endl<<flush;
 #endif
     indexes = randomized_labelling(G, d);
 #ifdef VERBOSE
+    cout<<"Processing query file..."<<endl<<flush;
+#endif
+    QP.from_file(argv[3],indexes, d, true);
+#ifdef VERBOSE
     cout<<"Solving queries..."<<endl<<flush;
 #endif
-    QP.from_file(argv[3],indexes, d);
     QP.solve(G, indexes,d,1);
 
     return 0;

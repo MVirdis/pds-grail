@@ -24,8 +24,8 @@ bool QueryProcessor::select_queries(uint u, uint v, Index *indexes, uint d) {
 	return true;
 }
 
-QueryProcessor& QueryProcessor::from_file(string file_path, Index *indexes, uint d) {
-	Interval interval;
+QueryProcessor& QueryProcessor::from_file(string file_path, Index *indexes, uint d, bool parallel) {
+	Query q;
 	ifstream file;
 
 	if (this->queries.size() != 0 || this->results != NULL)
@@ -33,26 +33,26 @@ QueryProcessor& QueryProcessor::from_file(string file_path, Index *indexes, uint
 		
 	file.open(file_path);
 	
-	while(file >> interval.first >> interval.second) {
-		bool res;
-		Query q;
-		file >> q.first >> q.second;
-		this->num_queries++;
-		res = this -> select_queries(q.first, q.second, indexes, d);
-		if (res) {
-			this->queries.push_back(q);
-			++after_select;
+	while(file >> q.first >> q.second) {
+		if (parallel) {
+			bool res;
+			this->num_queries++;
+			res = this -> select_queries(q.first, q.second, indexes, d);
+			if (res) {
+				this->queries.push_back(q);
+				++after_select;
+			} else {
+				cout<<q.first<<"  "<<q.second<<":    ";
+				cout<<"NOT REACHABLE"<<endl;
+			}
 		} else {
-			cout<<q.first<<"  "<<q.second<<":    ";
-			cout<<"NOT REACHABLE"<<endl;
+			this->num_queries++;
+			this->queries.push_back(q);
+			this->after_select++;
 		}
 	}
 
 	file.close();
-
-	//this->results = new bool[this->after_select]; // TODO Remove results safely
-	double percentage = (double)(100*((double)after_select/(double)num_queries));
-	cout << "after the selection we have " << percentage << "% " << "of queries" << endl;
 
 	return *this;
 }
@@ -80,15 +80,15 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 	case 1: {
 		
 		Barrier barrier(HOW_MANY_BUFF+1);
+		mutex m;
 		int offset = (this -> after_select)/HOW_MANY_BUFF;
 		
 		for (uint i = 0; i < HOW_MANY_BUFF; ++i) {
-			thread t (pre_process, offset, i, queries, ((i == (HOW_MANY_BUFF-1))? true:false), ref(G), indexes, d, this->after_select, ref(barrier));
+			thread t (pre_process, offset, i, queries, ((i == (HOW_MANY_BUFF-1))? true:false), ref(G), indexes, d, this->after_select, ref(barrier), &m);
 			t.detach();
 		}
 		
 		barrier.wait();
-		
 		break;
 	}
 		
