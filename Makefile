@@ -113,6 +113,13 @@ graph_test:
 	g++ -Wall -g -std=c++11 -o build/graph_test build/dag_generator.c build/*.cpp -DDEBUG
 	rm -rf build/*.c build/*.cpp build/*.h
 
+gra2que:
+	mkdir -p build
+	cp Include/Types.h build
+	cp GRA2QUE/gra2que.cpp build
+	g++ -Wall -g -std=c++11 -o build/gra2que build/gra2que.cpp
+	rm -rf build/*.cpp build/*.h
+
 generator:
 	mkdir -p build
 	cp Include/Generator.h build
