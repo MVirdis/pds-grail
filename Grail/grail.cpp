@@ -89,7 +89,7 @@ Index* sequential_labelling(Graph& G, const uint d) {
     Index* indexes = new Index[d];
     for(uint i=0; i<d; ++i) {
         indexes[i].set_size(G.get_num_nodes());
-        uint* roots = G.get_roots();
+        const uint* roots = G.get_roots();
         unordered_set<uint> visited_nodes;
         uint rank=1u;
         for(uint j=0; j<G.get_num_roots(); ++j){

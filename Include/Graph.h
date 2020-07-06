@@ -2,6 +2,9 @@
 #define _GRAPH_H_
 
 #include <iostream>
+#include <vector>
+
+#include "Types.h"
 
 /*
 *	A generic directed Graph.
@@ -12,7 +15,7 @@
 */
 class Graph {
 	uint** adj_list;
-	uint* roots;
+	std::vector<uint> roots;
 	uint num_nodes;
 	uint num_roots;
   public:
@@ -25,7 +28,7 @@ class Graph {
 	void clear(void);
 
 	/* Getters */
-	uint* get_roots(void) const;
+	const uint* get_roots(void) const;
 	uint get_num_nodes(void) const;
 	uint get_num_roots(void) const;
 	uint* get_children(uint x) const;
