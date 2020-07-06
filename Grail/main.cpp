@@ -91,6 +91,7 @@ void graph_creation() {
 void graph_load() {
     string file_path;
     ifstream graph_file;
+    chrono::steady_clock::time_point begin, end;
     cout<<"GRAPH Loader"<<endl;
     cout<<"What is the path to the .gra file? "; (cin>>file_path).get();
     graph_file.open(file_path);
@@ -101,12 +102,18 @@ void graph_load() {
     graph_file.close();
 
     cout<<"Loading graph..."<<flush;
+    begin = chrono::steady_clock::now();
     G.from_file(file_path.data());
+    end = chrono::steady_clock::now();
     cout<<"  OK"<<endl<<flush;
 
     uint bs = G.compute_size();
     cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
     cout<<(bs/(1024u*1024u))<<"MB"<<endl;
+
+    cout<<"Time required: ";
+    cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
+    cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
 
     // Remove previous index
     if(indexes) {
@@ -204,7 +211,7 @@ void process_queries(int menu) {
 	}
     file.close();
 	begin = chrono::steady_clock::now();
-    QP.from_file(name, indexes, d, (menu==1));
+    QP.from_file(name, indexes, d, menu);
 	QP.solve(G, indexes, d, menu);
 	end = chrono::steady_clock::now();
 
