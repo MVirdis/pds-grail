@@ -128,6 +128,10 @@ QueryProcessor& QueryProcessor::precision_test(Graph& G, Index *indexes, uint d)
 	return *this;
 }
 
+float QueryProcessor::after_selection_ratio() const {
+	return (float)this->after_select/this->num_queries;
+}
+
 QueryProcessor::~QueryProcessor() {
 	delete[] results;
 }

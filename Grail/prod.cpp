@@ -38,6 +38,6 @@ int main(int argc, char** argv) {
     cout<<"Solving queries..."<<endl<<flush;
 #endif
     QP.solve(G, indexes,d,1);
-
+    cout<<(1.0f-QP.after_selection_ratio())*100<<"% of queries done during I/O"<<endl;
     return 0;
 }

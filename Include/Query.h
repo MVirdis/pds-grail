@@ -24,6 +24,7 @@ public:
 	QueryProcessor& solve(Graph& G, Index* indexes, uint d, int menu);
 	QueryProcessor& clear(void);
 	QueryProcessor& precision_test(Graph& G, Index *indexes, uint d);
+	float after_selection_ratio() const;
 
 	~QueryProcessor();
 };
