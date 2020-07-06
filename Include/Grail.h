@@ -7,7 +7,7 @@
 #include "Index.h"
 #include "Graph.h"
 #include "Query.h"
-#define HOW_MANY_BUFF 10
+#define NUM_QUERY_WORKERS 50
 
 Index* randomized_labelling(Graph&, const uint);
 

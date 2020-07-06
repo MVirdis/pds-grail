@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <chrono>
 
 #include "Types.h"
 #include "Grail.h"
@@ -39,13 +40,13 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G, bool needs_chec
 
 void pre_process(int offset, uint i, std::vector<Query> queries, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr, mutex* m) {
 
-	uint tot = (offset)*(i+1) + (last ? (num_queries%HOW_MANY_BUFF) : 0 );
+	uint tot = (offset)*(i+1) + (last ? (num_queries%NUM_QUERY_WORKERS) : 0 );
 	for (uint j = (offset*i); j < tot; ++j) {
 		uint u=queries[j].first;
 		uint v =queries[j].second;
 		bool result = reachable(u, v, indexes, d, G, false);
 		unique_lock<mutex> lock(*m);
-		cout<<u<<"  "<<v<<":    ";
+		cout<<u<<"  "<<v<<": ";
 		if(result) cout<<"REACHABLE"<<endl;
 		else cout<<"NOT REACHABLE"<<endl;
 		lock.unlock();

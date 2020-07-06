@@ -42,7 +42,7 @@ QueryProcessor& QueryProcessor::from_file(string file_path, Index *indexes, uint
 				this->queries.push_back(q);
 				++after_select;
 			} else {
-				cout<<q.first<<"  "<<q.second<<":    ";
+				cout<<q.first<<"  "<<q.second<<": ";
 				cout<<"NOT REACHABLE"<<endl;
 			}
 		} else {
@@ -63,7 +63,6 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 	switch(menu) {
 	
 	case 0: {
-	
 		for (uint i = 0; i < this->after_select; ++i) {
 			bool result = reachable(queries[i].first, queries[i].second, indexes, d, G);
 		#if DEBUG
@@ -79,12 +78,12 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 		
 	case 1: {
 		
-		Barrier barrier(HOW_MANY_BUFF+1);
+		Barrier barrier(NUM_QUERY_WORKERS+1);
 		mutex m;
-		int offset = (this -> after_select)/HOW_MANY_BUFF;
+		int offset = (this -> after_select)/NUM_QUERY_WORKERS;
 		
-		for (uint i = 0; i < HOW_MANY_BUFF; ++i) {
-			thread t (pre_process, offset, i, queries, ((i == (HOW_MANY_BUFF-1))? true:false), ref(G), indexes, d, this->after_select, ref(barrier), &m);
+		for (uint i = 0; i < NUM_QUERY_WORKERS; ++i) {
+			thread t (pre_process, offset, i, queries, ((i == (NUM_QUERY_WORKERS-1))? true:false), ref(G), indexes, d, this->after_select, ref(barrier), &m);
 			t.detach();
 		}
 		
