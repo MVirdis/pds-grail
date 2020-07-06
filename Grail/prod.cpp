@@ -11,8 +11,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     if (argc != 4) {
-        cout<<"Need to know .gra file, d value and .que file"<<endl;
-        cout<<"grail graph.gra d queries.que"<<endl;
+        cout<<"grail <.gra file> <d> <.que file>"<<endl;
         return -1;
     }
 
@@ -38,6 +37,6 @@ int main(int argc, char** argv) {
     cout<<"Solving queries..."<<endl<<flush;
 #endif
     QP.solve(G, indexes,d,1);
-    cout<<(1.0f-QP.after_selection_ratio())*100<<"% of queries done during I/O"<<endl;
+
     return 0;
 }

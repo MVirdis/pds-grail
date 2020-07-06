@@ -11,8 +11,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     if (argc != 4) {
-        cout<<"Need to know .gra file, d value and .que file"<<endl;
-        cout<<"grail graph.gra d queries.que"<<endl;
+        cout<<"sequential <.gra file> <d> <.que file>"<<endl;
         return -1;
     }
 
