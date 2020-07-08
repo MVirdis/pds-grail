@@ -1,7 +1,3 @@
-#include <iostream>
-#include <thread>
-#include <chrono>
-
 #include "Types.h"
 #include "Grail.h"
 

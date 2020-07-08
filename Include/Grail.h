@@ -13,7 +13,7 @@ Index* randomized_labelling(Graph&, const uint);
 
 Index* sequential_labelling(Graph& G, const uint d);
 
-bool randomized_visit(uint x, Graph& G, uint& rank, std::unordered_set<uint>& visited, Index& index);
+void randomized_visit(uint x, Graph& G, uint& rank, std::unordered_set<uint>& visited, Index& index);
 
 bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G, bool needs_check=true);
 

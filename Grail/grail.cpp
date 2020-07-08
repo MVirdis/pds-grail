@@ -117,9 +117,9 @@ uint* reorder(uint* children, uint nchildren) {
     }
 }
 
-bool randomized_visit(uint x, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index) {
+void randomized_visit(uint x, Graph& G, uint& rank, unordered_set<uint>& visited, Index& index) {
     if (visited.count(x) > 0) // Node already visited
-        return false;
+        return;
     
     visited.insert(x); // Add this node to already visited
 
@@ -162,6 +162,4 @@ bool randomized_visit(uint x, Graph& G, uint& rank, unordered_set<uint>& visited
     }
 
     ++rank;
-
-    return true;
 }
