@@ -9,7 +9,7 @@
 #include "Generator.h"
 
 #define MENU_HEADER "[GRAIL Performance Tester]\nSelect one of the following options:"
-#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load a Graph\n   3. Build Index with Sequential GRAIL\n   4. Build Index with Parallel GRAIL\n   5. Process Queries Sequential\n   6. Process Queries Parallel\n   7. Analyze index diversity\n"
+#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load a Graph\n   3. Build Index with Sequential GRAIL\n   4. Build Index with Parallel GRAIL\n   5. Process Queries Sequential\n   6. Process Queries Parallel\n   7. Analyze index diversity"
 
 using namespace std;
 
