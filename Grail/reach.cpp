@@ -1,6 +1,5 @@
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <chrono>
 
 #include "Types.h"
@@ -10,7 +9,7 @@ using namespace std;
 
 bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G, bool needs_check) {
 	// For each Index check if interval Lv !C Lu and return false
-	for(uint i = 0; needs_check && i < d; ++i) {
+	for(uint i = 0; i < d; ++i) {
 		if ((indexes[i].get_interval(v).first < indexes[i].get_interval(u).first) || (indexes[i].get_interval(v).second > indexes[i].get_interval(u).second))
 			return false;
 	}
@@ -36,22 +35,4 @@ bool reachable(uint u, uint v, Index *indexes, uint d, Graph& G, bool needs_chec
 	}
 
 	return false;
-}
-
-void pre_process(int offset, uint i, std::vector<Query> queries, bool last, Graph& G, Index *indexes, uint d, uint num_queries, Barrier& barr, mutex* m) {
-
-	uint tot = (offset)*(i+1) + (last ? (num_queries%NUM_QUERY_WORKERS) : 0 );
-	for (uint j = (offset*i); j < tot; ++j) {
-		uint u=queries[j].first;
-		uint v =queries[j].second;
-		bool result = reachable(u, v, indexes, d, G, false);
-		unique_lock<mutex> lock(*m);
-		cout<<u<<"  "<<v<<": ";
-		if(result) cout<<"REACHABLE"<<endl;
-		else cout<<"NOT REACHABLE"<<endl;
-		lock.unlock();
-	}
-	
-	barr.wait();
-	
 }

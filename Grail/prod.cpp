@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 #ifdef VERBOSE
     cout<<"Processing query file..."<<endl<<flush;
 #endif
-    QP.from_file(argv[3],indexes, d, true);
+    QP.from_file(argv[3],indexes, d);
 #ifdef VERBOSE
     cout<<"Solving queries..."<<endl<<flush;
 #endif

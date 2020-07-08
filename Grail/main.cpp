@@ -211,7 +211,7 @@ void process_queries(int menu) {
 	}
     file.close();
 	begin = chrono::steady_clock::now();
-    QP.from_file(name, indexes, d, menu);
+    QP.from_file(name, indexes, d);
 	QP.solve(G, indexes, d, menu);
 	end = chrono::steady_clock::now();
 

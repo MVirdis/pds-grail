@@ -10,23 +10,15 @@
 
 class QueryProcessor {
 	std::vector<Query> queries;
-	bool* results;
-	uint num_queries;
-	uint after_select;
 
-	bool select_queries(uint u, uint v, Index *indexes, uint d);
 public:
-	/* Constructors */
-	QueryProcessor(void);
 
 	/* Methods */
-	QueryProcessor& from_file(std::string file_path, Index *indexes, uint d, bool parallel=false);
+	QueryProcessor& from_file(std::string file_path, Index *indexes, uint d);
 	QueryProcessor& solve(Graph& G, Index* indexes, uint d, int menu);
-	QueryProcessor& clear(void);
-	QueryProcessor& precision_test(Graph& G, Index *indexes, uint d);
-	float after_selection_ratio() const;
+	void clear(void);
 
-	~QueryProcessor();
+	//~QueryProcessor();
 };
 
 #endif
