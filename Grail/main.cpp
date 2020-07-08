@@ -8,9 +8,8 @@
 #include "Grail.h"
 #include "Generator.h"
 
-#define PARAMS "Param 1: graph file;\nParam 2: integer d;\nParam 3: query file"
 #define MENU_HEADER "[GRAIL Performance Tester]\nSelect one of the following options:"
-#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load Graph\n   3. Run Sequencial GRAIL with Graph, Node\n   4. Run GRAIL with Graph, Node on d threads\n   5. Process Queries Sequential\n   6. Process Queries Parallel"
+#define MENU_OPTS "  -1. Quit\n   0. Print MENU\n   1. Create a Graph\n   2. Load a Graph\n   3. Build Index with Sequential GRAIL\n   4. Build Index with Parallel GRAIL\n   5. Process Queries Sequential\n   6. Process Queries Parallel\n   7. Analyze index diversity\n"
 
 using namespace std;
 
@@ -23,6 +22,7 @@ void graph_creation();
 void graph_load();
 void grail_graph(int option);
 void process_queries(int menu);
+void index_quality();
 
 int main() {
 
@@ -64,6 +64,9 @@ int main() {
 				case 6:
 					process_queries(1);
 					break;
+                case 7:
+                    index_quality();
+                    break;
                 default:
                     cout<<"Not Supported"<<endl;
             }
@@ -107,10 +110,6 @@ void graph_load() {
     end = chrono::steady_clock::now();
     cout<<"  OK"<<endl<<flush;
 
-    uint bs = G.compute_size();
-    cout<<"The whole datastructure requires "<<(bs/1024u)<<"kB ";
-    cout<<(bs/(1024u*1024u))<<"MB"<<endl;
-
     cout<<"Time required: ";
     cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
@@ -127,8 +126,8 @@ void grail_graph(int option) {
         cout<<"Cannot build an index if you don't load a graph!!"<<endl;
         return;
     }
-    cout<<"GRAIL Tester - "<<(option == 3 ? "Sequential" : "DThreads")<<endl;
-    cout<<"What is the value of d for the index? "; (cin>>d).get();
+    cout<<"GRAIL Tester - "<<(option == 3 ? "Sequential" : "Parallel")<<endl;
+    cout<<"What is the value of d ? "; (cin>>d).get();
 
     chrono::steady_clock::time_point begin, end;
 	
@@ -164,7 +163,7 @@ void grail_graph(int option) {
     }
     if (G.get_num_nodes() > 20u) {
         cout<<"..."<<endl;
-        for(uint j=G.get_num_nodes()-1u-5u; j<G.get_num_nodes(); ++j) {
+        for(uint j=max(G.get_num_nodes()-1u-5u, 20u); j<G.get_num_nodes(); ++j) {
             cout<<"Node "<<j<<": ";
             for(uint i=0; i<d; ++i) {
                 Interval label = indexes[i].get_interval(j);
@@ -180,7 +179,14 @@ void grail_graph(int option) {
     cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl;
 
-    cout<<"Index takes "<<2*d*sizeof(uint)*G.get_num_nodes()/(1024u*1024u)<<"MB"<<endl;
+    cout<<"Index requires "<<2*d*sizeof(uint)*G.get_num_nodes()/(1024u*1024u)<<"MB"<<endl;
+}
+
+void index_quality() {
+    if (indexes == NULL) {
+        cout<<"Error first build an index"<<endl;
+        return;
+    }
     cout<<"Analyzing index..."<<flush;
     cout<<"\rIndex diversity: "<<(int)(index_diversity(indexes, d)*100)<<"%"<<endl;
 }

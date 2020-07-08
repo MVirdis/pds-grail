@@ -164,17 +164,6 @@ ostream& operator <<(ostream& ostr, const Graph& graph) {
     return ostr;
 }
 
-uint Graph::compute_size(void) const {
-    uint size = 0u;
-
-    size += sizeof(*this) + sizeof(uint*) * this->num_nodes + sizeof(uint)* this->num_roots;
-    for(uint i=0; i<this->num_nodes; ++i) {
-        size += sizeof(uint) * this->adj_list[i][0];
-    }
-
-    return size;
-}
-
 void Graph::clear(void) {
     for(uint j=0; j<num_nodes; ++j) {
         if (adj_list[j]) {
