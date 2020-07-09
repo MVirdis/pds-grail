@@ -37,7 +37,7 @@ Compiled by means of *make grail_tester*.
 Started from inside *build/* folder with *./grail_tester* no params.
 
 The following menu appears:
-<q>
+
 [GRAIL Performance Tester]
 Select one of the following options:
   -1. Quit
@@ -49,10 +49,6 @@ Select one of the following options:
    5. Process Queries Sequential
    6. Process Queries Parallel
    7. Analyze index diversity
-
-[STATUS]
-Empty
-</q>
 
 The first 4 options are self-explanatory.
 

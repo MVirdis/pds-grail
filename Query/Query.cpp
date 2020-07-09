@@ -42,7 +42,7 @@ static void solve_queries(uint offset, uint i, vector<Query>& queries, Graph& G,
 	
 }
 
-QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu) {
+QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu, bool output) {
 	uint num_queries = this->queries.size();
 	switch(menu) {
 		case 0: {
@@ -77,9 +77,11 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 		}
 	}
 	
-	for(uint i=0u; i<num_queries; ++i) {
-		if(this->queries[i].result) cout<<"REACHABLE"<<endl;
-		else cout<<"NOT REACHABLE"<<endl;
+	if (output) {
+		for(uint i=0u; i<num_queries; ++i) {
+			if(this->queries[i].result) cout<<"REACHABLE"<<endl;
+			else cout<<"NOT REACHABLE"<<endl;
+		}
 	}
 
 	return *this;
@@ -87,4 +89,8 @@ QueryProcessor& QueryProcessor::solve(Graph& G, Index* indexes, uint d, int menu
 
 void QueryProcessor::clear(void) {
 	queries.clear();
+}
+
+uint QueryProcessor::get_num_queries(void) const {
+	return this->queries.size();
 }

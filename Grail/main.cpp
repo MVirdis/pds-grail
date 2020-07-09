@@ -218,10 +218,14 @@ void process_queries(int menu) {
     file.close();
 	begin = chrono::steady_clock::now();
     QP.from_file(name, indexes, d);
-	QP.solve(G, indexes, d, menu);
+	QP.solve(G, indexes, d, menu, false);
 	end = chrono::steady_clock::now();
 
-	cout << "Queries processed in ";
+	cout << "All queries processed in ";
 	cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count()<<"[ms]";
     cout<<" / "<<chrono::duration_cast<chrono::seconds>(end - begin).count()<<"[s]" <<endl<<flush;
+
+    cout<<"Average time to answer a single query ";
+    cout<<chrono::duration_cast<chrono::milliseconds>(end - begin).count() / QP.get_num_queries()<<" [ms]  ";
+    cout<<chrono::duration_cast<chrono::nanoseconds>(end - begin).count() / QP.get_num_queries()<<" [ns]  ";
 }
